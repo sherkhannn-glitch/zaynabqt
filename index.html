@@ -1,218 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zainab's Beauty Corner | Huda Beauty Makeup</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Zaiiny</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --parchment:#f4e9d1;
+    --parchment-dark:#e6d3a8;
+    --ink:#4a2f1c;
+    --ink-soft:#6b4a30;
+    --ember:#b5482e;
+    --ember-deep:#7a2a17;
+    --gold:#c8973b;
+    --char:#2a1810;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(197,150,80,0.15), transparent 55%),
+      radial-gradient(ellipse at 80% 80%, rgba(122,42,23,0.12), transparent 55%),
+      var(--parchment);
+    font-family:'Cormorant Garamond', 'EB Garamond', serif;
+    color:var(--ink);
+    overflow:hidden;
+    height:100vh;
+    width:100vw;
+    position:relative;
+  }
+
+  /* floating embers */
+  .embers{position:fixed;inset:0;pointer-events:none;z-index:5;}
+  .ember-dot{
+    position:absolute;bottom:-10px;
+    width:4px;height:4px;border-radius:50%;
+    background:var(--gold);
+    opacity:0.7;
+    animation:rise linear infinite;
+    box-shadow:0 0 6px 2px rgba(200,151,59,0.5);
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0); opacity:0;}
+    10%{opacity:0.8;}
+    90%{opacity:0.4;}
+    100%{transform:translateY(-100vh) translateX(20px); opacity:0;}
+  }
+
+  /* nav dots */
+  .nav-dots{
+    position:fixed; right:22px; top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:14px; z-index:50;
+  }
+  .dot{
+    width:10px;height:10px;border-radius:50%;
+    border:1px solid var(--ink-soft);
+    background:transparent;
+    cursor:pointer;
+    transition:all .35s ease;
+    padding:0;
+  }
+  .dot.active{background:var(--ember); border-color:var(--ember); box-shadow:0 0 8px rgba(181,72,46,0.6);}
+
+  .pages{position:relative; height:100vh; width:100vw; perspective:1400px;}
+  .page{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+    padding:40px 8vw;
+    opacity:0; visibility:hidden;
+    transform:translateY(40px) rotate(0deg) scale(0.96);
+    transform-origin:50% 0%;
+    text-align:center;
+    will-change:transform, opacity;
+  }
+  .page.active{
+    opacity:1; visibility:visible;
+    transform:translateY(0) rotate(0deg) scale(1);
+    transition:transform .8s cubic-bezier(.22,1,.36,1), opacity .5s ease;
+    z-index:3;
+  }
+  .page.entering{
+    opacity:1; visibility:visible;
+    transform:translateY(60px) rotate(-2deg) scale(0.97);
+    transition:none;
+    z-index:3;
+  }
+  .page.leaving{
+    opacity:1; visibility:visible;
+    transform:translateY(0) rotate(0deg) scale(1);
+    transition:transform .75s cubic-bezier(.55,-0.2,.9,.4), opacity .75s ease .1s;
+    z-index:2;
+    pointer-events:none;
+    box-shadow:0 30px 60px rgba(42,24,16,0.25);
+  }
+  .page.fallen{
+    opacity:0; visibility:hidden;
+    transform:translateY(120vh) rotate(18deg) scale(0.9);
+  }
+
+  h1,h2{font-family:'Great Vibes', cursive; font-weight:400; color:var(--ember-deep); margin:0;}
+  h1{font-size:clamp(42px,7vw,80px);}
+  h2{font-size:clamp(32px,5vw,52px); margin-bottom:18px;}
+  p{font-size:clamp(17px,2.1vw,22px); line-height:1.7; color:var(--ink); max-width:640px; margin:0 auto;}
+  .eyebrow{
+    letter-spacing:3px; text-transform:uppercase; font-size:12px;
+    color:var(--ink-soft); font-family:'EB Garamond',serif; margin-bottom:6px;
+  }
+
+  /* candle - cover page */
+  .candle-wrap{position:relative; margin-bottom:14px;}
+  .flame{
+    width:16px;height:34px;
+    background:radial-gradient(circle at 50% 70%, #fff3c4, var(--gold) 45%, var(--ember) 80%, transparent 100%);
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    margin:0 auto;
+    animation:flicker 2.4s ease-in-out infinite;
+    transform-origin:bottom center;
+  }
+  @keyframes flicker{
+    0%,100%{transform:scaleY(1) scaleX(1) rotate(0deg); opacity:1;}
+    25%{transform:scaleY(1.08) scaleX(0.94) rotate(-2deg); opacity:0.95;}
+    50%{transform:scaleY(0.94) scaleX(1.05) rotate(2deg); opacity:1;}
+    75%{transform:scaleY(1.05) scaleX(0.97) rotate(-1deg); opacity:0.9;}
+  }
+  .candle-body{
+    width:22px;height:70px;background:linear-gradient(180deg,#fdf6e3,#e8d9b5);
+    margin:0 auto; border-radius:3px 3px 2px 2px;
+    box-shadow:inset -4px 0 6px rgba(0,0,0,0.08);
+  }
+  .open-hint{margin-top:26px; font-size:14px; letter-spacing:1px; color:var(--ink-soft); cursor:pointer; animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:0.5;}50%{opacity:1;}}
+
+  /* hearts drifting */
+  .heart{position:absolute; font-family:serif; color:var(--ember); opacity:0.5; pointer-events:none; animation:float 6s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-18px) rotate(6deg);}}
+
+  /* slider gallery */
+  .gallery{
+    display:flex; gap:20px; overflow-x:auto; scroll-snap-type:x mandatory;
+    max-width:720px; padding:20px 6px 30px; margin-top:10px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .gallery::-webkit-scrollbar{height:6px;}
+  .gallery::-webkit-scrollbar-thumb{background:var(--gold); border-radius:3px;}
+  .card{
+    flex:0 0 82%; max-width:380px; scroll-snap-align:center;
+    background:rgba(255,250,235,0.6);
+    border:1px solid var(--parchment-dark);
+    border-radius:8px;
+    padding:22px 24px;
+    box-shadow:0 6px 18px rgba(74,47,28,0.08);
+  }
+  .card .num{font-family:'Great Vibes',cursive; font-size:30px; color:var(--gold);}
+  .card p{font-size:17px; margin-top:6px;}
+  .swipe-hint{font-size:13px; color:var(--ink-soft); letter-spacing:1px; margin-top:4px;}
+
+  /* burnt letter page */
+  .letter-wrap{position:relative; width:min(88vw,560px);}
+  .letter{
+    background:
+      repeating-linear-gradient(0deg, rgba(74,47,28,0.02) 0px, transparent 2px, transparent 26px),
+      linear-gradient(160deg,#f9efd6,#ecd9ab);
+    padding:44px 38px;
+    font-family:'EB Garamond', serif; font-style:italic;
+    color:var(--char);
+    font-size:19px; line-height:1.85;
+    box-shadow:0 10px 30px rgba(42,24,16,0.25);
+    position:relative;
+    -webkit-mask-image: radial-gradient(circle at var(--bx,100%) var(--by,0%), transparent 0, transparent calc(var(--burn,0%) * 0.01 * 260px), black calc(var(--burn,0%) * 0.01 * 260px + 40px));
+            mask-image: radial-gradient(circle at var(--bx,100%) var(--by,0%), transparent 0, transparent calc(var(--burn,0%) * 0.01 * 260px), black calc(var(--burn,0%) * 0.01 * 260px + 40px));
+  }
+  .scorch{
+    position:absolute; top:-14px; right:-14px; width:120px; height:120px;
+    background:radial-gradient(circle, var(--char) 0%, var(--ember-deep) 30%, transparent 70%);
+    filter:blur(6px); opacity:0.55; pointer-events:none;
+  }
+  .burn-slider-wrap{margin-top:24px; display:flex; align-items:center; gap:12px; width:min(88vw,560px);}
+  .burn-slider-wrap input[type=range]{flex:1; accent-color:var(--ember);}
+  .burn-label{font-size:13px; color:var(--ink-soft); letter-spacing:1px; white-space:nowrap;}
+
+  .signature{font-family:'Great Vibes', cursive; font-size:30px; color:var(--ember-deep); margin-top:10px;}
+
+  @media (max-width:640px){
+    .nav-dots{right:10px; gap:10px;}
+    .page{padding:30px 6vw;}
+    .card{flex:0 0 88%;}
+  }
+</style>
 </head>
 <body>
-  <div class="promo-bar">
-    <p><span>Exclusive Deal:</span> Free worldwide shipping on Huda Beauty orders over $75 • Limited-time beauty drop. Free worldwide shipping on Huda Beauty orders over $75 • Limited-time beauty drop.</p>
-  </div>
-  <header class="site-header">
-    <div class="brand">
-      <div class="brand-mark">ZB</div>
-      <div>
-        <p class="brand-name">Zainab's Beauty Corner</p>
-        <p class="brand-tag">Curated Huda Beauty elegance</p>
+
+<div class="embers" id="embers"></div>
+
+<div class="nav-dots" id="navDots"></div>
+
+<div class="pages" id="pages">
+
+  <!-- Page 0: Cover -->
+  <section class="page active" data-title="Cover">
+    <div class="candle-wrap">
+      <div class="flame"></div>
+      <div class="candle-body"></div>
+    </div>
+    <div class="eyebrow">a small thing I made</div>
+    <h1>For Zaiiny</h1>
+    <p>with all the words I don't always say out loud.</p>
+    <div class="open-hint" onclick="goTo(1)">↓ open it, love ↓</div>
+  </section>
+
+  <!-- Page 1: Today -->
+  <section class="page" data-title="Today">
+    <div class="eyebrow">today</div>
+    <h2>The day I met your family</h2>
+    <p>Today I met you with your mother and your brother Zia. I was a little nervous, ngl, but the moment I saw you there, everything felt calm. Meeting the people who raised you, who know you best — that meant a lot to me. It felt like you were letting me a little closer into your world, and I don't take that lightly.</p>
+  </section>
+
+  <!-- Page 2: The Look -->
+  <section class="page" data-title="The Look">
+    <div class="eyebrow">the moment</div>
+    <h2>The way you looked at me</h2>
+    <p>While we were all together, you looked at me a certain way — different from before. Softer. Warmer. Like something was settled in your heart. I felt it, and it made me feel sure of us. That look told me more than words could. I hope you know it reached me, and it's still sitting in my chest right now.</p>
+    <div class="gallery" id="gallery">
+      <div class="card"><div class="num">01</div><p>The way you stood close to me without thinking about it.</p></div>
+      <div class="card"><div class="num">02</div><p>You laughed at something small and glanced at me right after.</p></div>
+      <div class="card"><div class="num">03</div><p>Your eyes said "I'm comfortable here, with you."</p></div>
+      <div class="card"><div class="num">04</div><p>The quiet look that told me I'm not just someone passing by.</p></div>
+    </div>
+    <div class="swipe-hint">← swipe to see more →</div>
+  </section>
+
+  <!-- Page 3: My Promise -->
+  <section class="page" data-title="My Promise">
+    <div class="eyebrow">my promise to you</div>
+    <h2>What I want to give you</h2>
+    <p>I want you to always feel sure of me, the way I feel sure of you now. I'll respect you, listen to you, and never make you feel small. Your voice matters to me — what you want, what you feel, what you need. I'm not here to change you, only to stand beside you and make you feel safe. Today made me even more certain: I really love you, Zaiiny, and I'm grateful you let me see this side of your life.</p>
+  </section>
+
+  <!-- Page 4: Burnt letter -->
+  <section class="page" data-title="A Letter">
+    <div class="eyebrow">a letter, half kept, half given to the fire</div>
+    <div class="letter-wrap">
+      <div class="scorch"></div>
+      <div class="letter" id="letterText">
+        My Zaiiny,<br><br>
+        Some feelings are hard to say straight, so I burned the edges of this letter, the way my heart burns a little every time I think of you. Today, meeting your mother, your brother Zia, standing next to you — I felt something settle in me. Reassured. Certain. Loved.<br><br>
+        Whatever you ask of me, I will try to give. Whatever you need from me, I will try to be. I respect you fully, and I will keep choosing you, gently, every day.
+        <div class="signature">— always yours</div>
       </div>
     </div>
-    <nav class="nav-links">
-      <a href="#products">Shop</a>
-      <a href="#products">New</a>
-      <a href="#products">Best sellers</a>
-      <a href="#about">About</a>
-    </nav>
-    <div class="header-actions">
-      <button class="icon-btn cart-btn" aria-label="View cart">🛍️</button>
-      <button class="cta-btn" id="open-filter">Browse Collections</button>
+    <div class="burn-slider-wrap">
+      <span class="burn-label">reveal</span>
+      <input type="range" min="0" max="100" value="35" id="burnRange">
+      <span class="burn-label">burn</span>
     </div>
-  </header>
-  <main>
-    <section class="hero-section">
-      <div class="hero-copy">
-        <p class="eyebrow">Huda Beauty luxury, curated for you</p>
-        <h1>Beauty with luminous confidence</h1>
-        <p>Explore exclusive Huda Beauty collections, flawless finishes, and elegant makeup moments designed to glow from day to night.</p>
-        <div class="hero-actions">
-          <a href="#products" class="primary-btn">Shop the Edit</a>
-          <a href="#about" class="secondary-btn">Discover the Glow</a>
-        </div>
-        <div class="hero-highlights">
-          <span>Fast delivery</span>
-          <span>Limited-edition Huda Beauty sets</span>
-          <span>Curated for effortless glam</span>
-        </div>
-      </div>
-      <div class="hero-image-card">
-        <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/02-PRETTY-PEACHY-LIP-KIT_69c95ddc-1954-4590-8dae-b0ecbd91b2c0.webp?v=1780912944" alt="Huda Beauty Pretty Peachy Lip Kit" />
-        <div class="hero-stat">
-          <p>Premium Huda Beauty makeup</p>
-          <span>Curated by Zainab</span>
-        </div>
-      </div>
-    </section>
+  </section>
 
-    <section class="brand-strip" id="brands">
-      <div class="brand-item">
-        <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/01-NEVER-TOO-MUCH-DUO_1.webp?v=1778670357" alt="Huda Beauty Never Too Much Duo" />
-        <p>Never Too Much Duo</p>
-      </div>
-      <div class="brand-item">
-        <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/EASY-BAKE-INTENSE-FRAGRANCE-10ML-ECOMM_FAMILY_1.webp?v=1777531270" alt="Huda Beauty Easy Bake Intense Fragrance" />
-        <p>Easy Bake Intense</p>
-      </div>
-      <div class="brand-item">
-        <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/LIP-STAIN-OIL-KIT.webp?v=1759616962" alt="Huda Beauty Lip Stain & Oil Kit" />
-        <p>Lip Stain & Oil Kit</p>
-      </div>
-    </section>
+  <!-- Page 5: Closing -->
+  <section class="page" data-title="You and me">
+    <div class="eyebrow">last page</div>
+    <h2>You and me</h2>
+    <p>Thank you for today, Zaiiny. For your family, for your trust, for that look you gave me. I really love you, and I'm not going anywhere. Whenever you doubt it, come back and open this page again.</p>
+    <div class="signature">I love you.</div>
+  </section>
 
-    <section class="products-section" id="products">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Featured collection</p>
-          <h2>Huda Beauty makeup essentials</h2>
-          <p>Explore rich color, flawless glow, and high-impact formulas curated for every beauty routine.</p>
-        </div>
-        <div class="sort-row">
-          <span>Filter</span>
-          <button class="mini-btn" id="show-all">Show all</button>
-        </div>
-      </div>
+</div>
 
-      <div class="product-grid" id="product-grid">
-        <article class="product-card" data-category="lips">
-          <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/02-PRETTY-PEACHY-LIP-KIT_69c95ddc-1954-4590-8dae-b0ecbd91b2c0.webp?v=1780912944" alt="Huda Beauty Pretty Peachy Lip Kit" />
-          <div class="product-info">
-            <span class="product-badge">Best seller</span>
-            <p class="product-brand">Huda Beauty</p>
-            <h3>Pretty Peachy Lip Kit</h3>
-            <p>Glossy lip stain set with a hydrating lover finish.</p>
-            <div class="product-meta">
-              <span class="product-price">$44</span>
-              <button class="secondary-btn add-btn">Add to Bag</button>
-              <button class="icon-btn favorite-btn" data-action="favorite">❤</button>
-            </div>
-          </div>
-        </article>
+<script>
+  const pages = document.querySelectorAll('.page');
+  const navWrap = document.getElementById('navDots');
+  pages.forEach((p,i)=>{
+    const b = document.createElement('button');
+    b.className = 'dot' + (i===0?' active':'');
+    b.setAttribute('aria-label', p.dataset.title);
+    b.onclick = ()=>goTo(i);
+    navWrap.appendChild(b);
+  });
+  const dots = navWrap.querySelectorAll('.dot');
+  let current = 0;
+  let animating = false;
+  function goTo(i){
+    if(i<0||i>=pages.length || i===current || animating) return;
+    animating = true;
+    const dir = i > current ? 1 : -1;
+    const outgoing = pages[current];
+    const incoming = pages[i];
 
-        <article class="product-card" data-category="lips">
-          <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/LIP-STAIN-OIL-KIT.webp?v=1759616962" alt="Huda Beauty Lip Stain & Oil Kit" />
-          <div class="product-info">
-            <span class="product-badge">New</span>
-            <p class="product-brand">Huda Beauty</p>
-            <h3>Lip Stain & Oil Kit</h3>
-            <p>Longwear, luminous lips with rich color and mirror shine.</p>
-            <div class="product-meta">
-              <span class="product-price">$38</span>
-              <button class="secondary-btn add-btn">Add to Bag</button>
-              <button class="icon-btn favorite-btn" data-action="favorite">❤</button>
-            </div>
-          </div>
-        </article>
+    dots[current].classList.remove('active');
+    dots[i].classList.add('active');
 
-        <article class="product-card" data-category="face">
-          <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/01-NEVER-TOO-MUCH-DUO_1.webp?v=1778670357" alt="Huda Beauty Never Too Much Duo" />
-          <div class="product-info">
-            <span class="product-badge">Glow</span>
-            <p class="product-brand">Huda Beauty</p>
-            <h3>Never Too Much Duo</h3>
-            <p>Skin-blurring base and glow finish for makeup that lasts.</p>
-            <div class="product-meta">
-              <span class="product-price">$52</span>
-              <button class="secondary-btn add-btn">Add to Bag</button>
-              <button class="icon-btn favorite-btn" data-action="favorite">❤</button>
-            </div>
-          </div>
-        </article>
+    outgoing.classList.remove('active');
+    outgoing.classList.add('leaving');
 
-        <article class="product-card" data-category="face">
-          <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/01-NEVER-TOO-MUCH-DUO_1.webp?v=1778670357" alt="Huda Beauty Never Too Much Duo alternate" />
-          <div class="product-info">
-            <span class="product-badge">Limited</span>
-            <p class="product-brand">Huda Beauty</p>
-            <h3>Never Too Much Duo</h3>
-            <p>A photo-ready duo to blur, brighten, and perfect your complexion.</p>
-            <div class="product-meta">
-              <span class="product-price">$52</span>
-              <button class="secondary-btn add-btn">Add to Bag</button>
-              <button class="icon-btn favorite-btn" data-action="favorite">❤</button>
-            </div>
-          </div>
-        </article>
+    incoming.classList.remove('fallen');
+    incoming.classList.add('entering');
+    incoming.style.transform = `translateY(${60*dir}px) rotate(${-2*dir}deg) scale(0.97)`;
 
-        <article class="product-card" data-category="eyes">
-          <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/01-LIPSTAIN-REPUSH-KIT-02_ae08f896-cbab-406-bd04-e6635c7fb4d8.webp?v=1777551211" alt="Huda Beauty Huda's Paris Look Set" />
-          <div class="product-info">
-            <span class="product-badge">Trending</span>
-            <p class="product-brand">Huda Beauty</p>
-            <h3>Huda's Paris Look Set</h3>
-            <p>Eye color infusion and statement shades for editorial glam.</p>
-            <div class="product-meta">
-              <span class="product-price">$49</span>
-              <button class="secondary-btn add-btn">Add to Bag</button>
-              <button class="icon-btn favorite-btn" data-action="favorite">❤</button>
-            </div>
-          </div>
-        </article>
+    void incoming.offsetWidth;
 
-        <article class="product-card" data-category="lips">
-          <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/06-SOFT-PINK-LIP-KIT.webp?v=1778064553" alt="Huda Beauty Soft Pink Lip Kit" />
-          <div class="product-info">
-            <span class="product-badge">Soft</span>
-            <p class="product-brand">Huda Beauty</p>
-            <h3>Soft Pink Lip Kit</h3>
-            <p>Soft, rosy tones for an effortless, polished look.</p>
-            <div class="product-meta">
-              <span class="product-price">$42</span>
-              <button class="secondary-btn add-btn">Add to Bag</button>
-              <button class="icon-btn favorite-btn" data-action="favorite">❤</button>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
+    requestAnimationFrame(()=>{
+      outgoing.style.transform = `translateY(${120*dir}vh) rotate(${18*dir}deg) scale(0.9)`;
+      outgoing.style.opacity = '0';
 
-    <section class="about-section" id="about">
-      <div class="about-card">
-        <h2>Zainab's Beauty Corner</h2>
-        <p>Luxury Huda Beauty makeup, polished styling, and a premium shopping experience crafted for beauty lovers.</p>
-        <ul>
-          <li>Curated Huda Beauty collections</li>
-          <li>Bold, modern product visuals</li>
-          <li>Pro-level makeup inspiration</li>
-        </ul>
-      </div>
-      <div class="about-image">
-        <img src="https://cdn.shopify.com/s/files/1/0959/8962/9206/files/EASY-BAKE-INTENSE-FRAGRANCE-10ML-ECOMM_FAMILY_1.webp?v=1777531270" alt="Huda Beauty collection imagery" />
-      </div>
-    </section>
-  </main>
+      incoming.classList.remove('entering');
+      incoming.classList.add('active');
+      incoming.style.transform = '';
+    });
 
-  <footer class="site-footer">
-    <p>Zainab's Beauty Corner © 2026 • Huda Beauty makeup curated for every glow.</p>
-  </footer>
+    setTimeout(()=>{
+      outgoing.classList.remove('leaving');
+      outgoing.classList.add('fallen');
+      outgoing.style.transform = '';
+      outgoing.style.opacity = '';
+      current = i;
+      animating = false;
+    }, 780);
+  }
+  let touchStartY = null;
+  document.addEventListener('wheel', (e)=>{
+    if(Math.abs(e.deltaY) < 20) return;
+    if(e.deltaY > 0) goTo(current+1); else goTo(current-1);
+  }, {passive:true});
+  document.addEventListener('touchstart', e=>{ touchStartY = e.touches[0].clientY; });
+  document.addEventListener('touchend', e=>{
+    if(touchStartY===null) return;
+    const dy = touchStartY - e.changedTouches[0].clientY;
+    if(Math.abs(dy) > 60){ if(dy>0) goTo(current+1); else goTo(current-1); }
+    touchStartY = null;
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowDown'||e.key==='ArrowRight') goTo(current+1);
+    if(e.key==='ArrowUp'||e.key==='ArrowLeft') goTo(current-1);
+  });
 
-  <div class="filter-drawer" id="filter-drawer" aria-hidden="true">
-    <div class="drawer-content">
-      <div class="drawer-header">
-        <h3>Filter by category</h3>
-        <button class="close-btn" id="close-filter">×</button>
-      </div>
-      <div class="drawer-options">
-        <button class="category-filter active" data-category="all">All</button>
-        <button class="category-filter" data-category="lips">Lips</button>
-        <button class="category-filter" data-category="face">Face</button>
-        <button class="category-filter" data-category="eyes">Eyes</button>
-      </div>
-    </div>
-  </div>
+  // embers
+  const emberHost = document.getElementById('embers');
+  for(let i=0;i<22;i++){
+    const d = document.createElement('div');
+    d.className = 'ember-dot';
+    d.style.left = Math.random()*100+'vw';
+    d.style.animationDuration = (6+Math.random()*8)+'s';
+    d.style.animationDelay = (Math.random()*8)+'s';
+    emberHost.appendChild(d);
+  }
 
-  <script src="script.js"></script>
+  // drifting hearts on look page
+  const lookPage = document.querySelector('[data-title="The Look"]');
+  for(let i=0;i<6;i++){
+    const h = document.createElement('div');
+    h.className='heart';
+    h.textContent='❤';
+    h.style.left = (10+Math.random()*80)+'%';
+    h.style.top = (10+Math.random()*70)+'%';
+    h.style.fontSize = (14+Math.random()*16)+'px';
+    h.style.animationDuration = (4+Math.random()*4)+'s';
+    lookPage.appendChild(h);
+  }
+
+  // burnt letter slider
+  const burnRange = document.getElementById('burnRange');
+  const letter = document.getElementById('letterText');
+  function updateBurn(){
+    letter.style.setProperty('--burn', burnRange.value);
+  }
+  burnRange.addEventListener('input', updateBurn);
+  updateBurn();
+</script>
+
 </body>
 </html>
