@@ -182,7 +182,40 @@
   .burn-slider-wrap input[type=range]{flex:1; accent-color:var(--ember);}
   .burn-label{font-size:13px; color:var(--ink-soft); letter-spacing:1px; white-space:nowrap;}
 
-  .signature{font-family:'Great Vibes', cursive; font-size:30px; color:var(--ember-deep); margin-top:10px;}
+  /* proposal page */
+  .btn-row{display:flex; gap:18px; margin-top:34px; justify-content:center; flex-wrap:wrap; position:relative; min-height:70px;}
+  .yes-btn, .no-btn{
+    font-family:'EB Garamond', serif; font-size:19px; letter-spacing:0.5px;
+    padding:14px 30px; border-radius:30px; cursor:pointer;
+    border:1px solid var(--ember-deep);
+  }
+  .yes-btn{
+    background:var(--ember); color:#fff8ec; border-color:var(--ember-deep);
+    box-shadow:0 6px 16px rgba(181,72,46,0.35);
+    transition:transform .2s ease;
+  }
+  .yes-btn:hover{transform:scale(1.06);}
+  .no-btn{
+    background:transparent; color:var(--ink-soft);
+    position:relative;
+    transition:transform .18s ease;
+  }
+  .no-btn.dodging{position:fixed;}
+  .yes-reveal{margin-top:28px; font-family:'Great Vibes',cursive; font-size:38px; color:var(--ember-deep); opacity:0; transform:translateY(10px); transition:opacity .6s ease, transform .6s ease;}
+  .yes-reveal.show{opacity:1; transform:translateY(0);}
+  .music-toggle{
+    position:fixed; left:20px; bottom:20px; z-index:60;
+    display:flex; align-items:center; gap:8px;
+    font-size:12px; letter-spacing:1px; color:var(--ink-soft);
+    background:rgba(255,250,235,0.75); border:1px solid var(--parchment-dark);
+    padding:8px 14px; border-radius:20px; cursor:pointer;
+  }
+  .music-toggle .dotpulse{width:7px;height:7px;border-radius:50%;background:var(--ember); animation:pulse 1.6s ease-in-out infinite;}
+  .burst-heart{position:fixed; font-size:20px; color:var(--ember); pointer-events:none; animation:burst 1.4s ease-out forwards; z-index:70;}
+  @keyframes burst{
+    0%{transform:translate(0,0) scale(0.6); opacity:1;}
+    100%{transform:translate(var(--bx),var(--by)) scale(1.3); opacity:0;}
+  }
 
   @media (max-width:640px){
     .nav-dots{right:10px; gap:10px;}
@@ -258,14 +291,25 @@
     </div>
   </section>
 
-  <!-- Page 5: Closing -->
+  <!-- Page 5: Closing / Proposal -->
   <section class="page" data-title="You and me">
     <div class="eyebrow">last page</div>
     <h2>You and me</h2>
-    <p>Thank you for today, Zaiiny. For your family, for your trust, for that look you gave me. I really love you, and I'm not going anywhere. Whenever you doubt it, come back and open this page again.</p>
-    <div class="signature">I love you.</div>
+    <p>Thank you for today, Zaiiny. For your family, for your trust, for that look you gave me. I really love you, and I'm not going anywhere. You're kind, you're beautiful, and being near you makes everything feel steady.</p>
+    <p style="margin-top:18px; font-size:22px;">So I have to ask you something.</p>
+    <h2 style="margin-top:18px;">Will you be my girlfriend?</h2>
+    <div class="btn-row">
+      <button class="yes-btn" id="yesBtn" onclick="sayYes(event)">yes, always</button>
+      <button class="no-btn" id="noBtn">no</button>
+    </div>
+    <div class="yes-reveal" id="yesReveal">she said yes 🤍</div>
   </section>
 
+</div>
+
+<div class="music-toggle" id="musicToggle">
+  <span class="dotpulse"></span>
+  <span id="musicLabel">play music</span>
 </div>
 
 <script>
@@ -316,6 +360,9 @@
       outgoing.style.opacity = '';
       current = i;
       animating = false;
+      if(current === pages.length - 1){
+        playMusic();
+      }
     }, 780);
   }
   let touchStartY = null;
@@ -358,6 +405,137 @@
     h.style.animationDuration = (4+Math.random()*4)+'s';
     lookPage.appendChild(h);
   }
+
+  // dodging "no" button
+  const noBtn = document.getElementById('noBtn');
+  function dodge(){
+    const w = window.innerWidth, h = window.innerHeight;
+    const bw = noBtn.offsetWidth || 90, bh = noBtn.offsetHeight || 46;
+    const margin = 24;
+    const x = margin + Math.random() * (w - bw - margin*2);
+    const y = margin + Math.random() * (h - bh - margin*2);
+    noBtn.classList.add('dodging');
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
+  }
+  noBtn.addEventListener('mouseenter', dodge);
+  noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); dodge(); }, {passive:false});
+  noBtn.addEventListener('click', (e)=>{ e.preventDefault(); dodge(); });
+
+  // yes celebration
+  function sayYes(e){
+    const reveal = document.getElementById('yesReveal');
+    reveal.classList.add('show');
+    for(let i=0;i<24;i++){
+      const h = document.createElement('div');
+      h.className = 'burst-heart';
+      h.textContent = '❤';
+      const ang = Math.random()*Math.PI*2;
+      const dist = 80 + Math.random()*160;
+      h.style.setProperty('--bx', Math.cos(ang)*dist + 'px');
+      h.style.setProperty('--by', Math.sin(ang)*dist + 'px');
+      h.style.left = e.clientX + 'px';
+      h.style.top = e.clientY + 'px';
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(), 1500);
+    }
+    noBtn.style.display = 'none';
+  }
+
+  // ---- tiny music-box melody (original, generated, no file needed) ----
+  let audioCtx = null;
+  let masterGain = null;
+  let melodyTimer = null;
+  let musicPlaying = false;
+
+  function ensureAudio(){
+    if(!audioCtx){
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.16;
+      const warmth = audioCtx.createBiquadFilter();
+      warmth.type = 'lowpass';
+      warmth.frequency.value = 2600;
+      masterGain.connect(warmth);
+      warmth.connect(audioCtx.destination);
+      masterGain._out = warmth;
+    }
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function unlockOnce(){
+    ensureAudio();
+  }
+  document.addEventListener('click', unlockOnce, {once:true});
+  document.addEventListener('touchstart', unlockOnce, {once:true});
+  document.addEventListener('keydown', unlockOnce, {once:true});
+
+  const NOTE = {C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99,A5:880.00,B5:987.77,C6:1046.50,D6:1174.66,E6:1318.51};
+  const melody = [
+    [NOTE.E5,0.35],[NOTE.G5,0.35],[NOTE.C6,0.5],[NOTE.B5,0.35],[NOTE.G5,0.35],
+    [NOTE.A5,0.35],[NOTE.C6,0.35],[NOTE.E6,0.7],
+    [0,0.25],
+    [NOTE.D6,0.35],[NOTE.B5,0.35],[NOTE.G5,0.5],[NOTE.A5,0.35],[NOTE.F5,0.35],
+    [NOTE.G5,0.35],[NOTE.E5,0.35],[NOTE.C5,0.8],
+    [0,0.5]
+  ];
+
+  function pluckNote(freq, dur, startTime){
+    if(!freq) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = freq;
+    const overtone = audioCtx.createOscillator();
+    overtone.type = 'sine';
+    overtone.frequency.value = freq * 2;
+    const overtoneGain = audioCtx.createGain();
+    overtoneGain.gain.value = 0.15;
+
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.5, startTime + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + dur);
+
+    osc.connect(gain);
+    overtone.connect(overtoneGain);
+    overtoneGain.connect(gain);
+    gain.connect(masterGain);
+
+    osc.start(startTime);
+    osc.stop(startTime + dur + 0.05);
+    overtone.start(startTime);
+    overtone.stop(startTime + dur + 0.05);
+  }
+
+  function scheduleLoop(){
+    ensureAudio();
+    let t = audioCtx.currentTime + 0.1;
+    melody.forEach(([freq,dur])=>{
+      pluckNote(freq, dur*0.92, t);
+      t += dur;
+    });
+    const totalDur = melody.reduce((s,[,d])=>s+d,0);
+    melodyTimer = setTimeout(scheduleLoop, totalDur*1000);
+  }
+
+  function playMusic(){
+    ensureAudio();
+    if(musicPlaying) return;
+    musicPlaying = true;
+    scheduleLoop();
+    musicLabel.textContent = 'music playing';
+  }
+  function stopMusic(){
+    musicPlaying = false;
+    clearTimeout(melodyTimer);
+    musicLabel.textContent = 'play music';
+  }
+
+  const musicToggle = document.getElementById('musicToggle');
+  const musicLabel = document.getElementById('musicLabel');
+  musicToggle.addEventListener('click', ()=>{
+    if(musicPlaying) stopMusic(); else playMusic();
+  });
 
   // burnt letter slider
   const burnRange = document.getElementById('burnRange');
