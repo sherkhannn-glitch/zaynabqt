@@ -1,828 +1,820 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Universe — Me &amp; Zaiiny</title>
-
-<!--
-  ══════════════════════════════════════════════════════════════════
-  HOW TO CUSTOMIZE THIS WEBSITE (read me first!)
-  ══════════════════════════════════════════════════════════════════
-  1. PHOTOS  → your real photos are already wired in under /.
-     To add more, drop new files into the  folder and add a
-     new .photo-frame block (copy an existing one as a template).
-  2. MUSIC   → put an mp3 named "song.mp3" inside the "music" folder
-     next to this file, so the note-button at bottom right works.
-  3. TEXT/LETTERS → edit the words directly. Replace [Humayun].
-  4. CONFIG  → search "CONFIG START" near the bottom <script> — set
-     your anniversary date, secret-section password, reasons list,
-     and hidden star memories there.
-  ══════════════════════════════════════════════════════════════════
--->
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Welcome Home, Zaiiny</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+
+<!--
+  ============================================================
+  A NOTE FOR YOU (the person building this):
+  - Search "EDIT ME" for every spot meant for your own words,
+    real memories, or photos.
+  - To add a real photo to a lantern memory, find the
+    memories array in the script and add: photo: "your-url.jpg"
+  - To add music, uncomment the <audio> tag below body-open
+    and point it at your own file.
+  - This is a click-to-explore world, not a scrolling page —
+    every location is its own full-screen scene.
+  ============================================================
+-->
 
 <style>
   :root{
-    --midnight:#0B1026;
-    --deep-purple:#1C1638;
-    --warm-white:#F8F8F8;
-    --soft-pink:#F7C6D9;
-    --gold:#F4D35E;
-    --rain:#161227;
-    --rain2:#0d0b1a;
-    --sunrise1:#3a2452;
-    --sunrise2:#c96f56;
-    --sunrise3:#f4d35e;
-    --sky-a: var(--midnight);
-    --sky-b: var(--deep-purple);
-    --transition-slow: 2.2s ease;
+    --font-display:'Playfair Display', Georgia, serif;
+    --font-script:'Dancing Script', cursive;
+    --font-body:'Cormorant Garamond', Georgia, serif;
+    --cream:#FBF3E6;
+    --gold:#FFD87A;
+    --rose:#E88FA0;
   }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    overflow:hidden; background:#050310;
+    font-family:var(--font-body); color:var(--cream);
+  }
+  h1,h2,h3{ font-family:var(--font-display); font-weight:600; margin:0; }
+  .script{ font-family:var(--font-script); }
+  button{ font-family:inherit; }
+  ::selection{ background:var(--rose); color:#fff; }
 
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    font-family:'Poppins', sans-serif;
-    background:var(--midnight);
-    color:var(--warm-white);
-    overflow-x:hidden;
-    min-height:100vh;
+  #app{ position:fixed; inset:0; overflow:hidden; }
+  #stage{ position:absolute; inset:0; }
+  .scene{
+    position:absolute; inset:0; overflow:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:6vh 5vw;
   }
-  h1,h2,h3,.script{
-    font-family:'Great Vibes', cursive;
-    font-weight:400;
-    letter-spacing:0.5px;
-  }
-  .letter-text, .letter blockquote{
-    font-family:'Caveat', cursive;
-  }
-  ::selection{ background:var(--soft-pink); color:var(--midnight); }
-
-  @media (prefers-reduced-motion: reduce){
-    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
-  }
-
-  /* ============ SKY / BACKGROUND ============ */
-  .sky{
-    position:fixed; inset:0; z-index:-3;
-    background: radial-gradient(ellipse at 20% 15%, var(--sky-b) 0%, var(--sky-a) 55%, #05060f 100%);
-    transition: background var(--transition-slow);
-    overflow:hidden;
-  }
-  .sky.mood-rain{ --sky-a: var(--rain2); --sky-b: var(--rain); }
-  .sky.mood-sunrise{
-    background: linear-gradient(180deg, var(--sunrise1) 0%, var(--sunrise2) 55%, var(--sunrise3) 100%);
-  }
-  .sky.mood-forever{
-    background: radial-gradient(ellipse at 50% 30%, #2a2158 0%, var(--midnight) 60%, #05060f 100%);
-  }
-
-  .stars{ position:absolute; inset:0; }
-  .star{
-    position:absolute; background:var(--warm-white); border-radius:50%;
-    animation:twinkle 4s ease-in-out infinite;
-    opacity:0.6;
-  }
-  @keyframes twinkle{
-    0%,100%{ opacity:0.15; transform:scale(0.8); }
-    50%{ opacity:1; transform:scale(1.15); }
-  }
-
-  .cloud{
-    position:absolute; border-radius:50%;
-    background: radial-gradient(ellipse, rgba(248,248,248,0.06), transparent 70%);
-    filter:blur(6px);
-    animation:drift 60s linear infinite;
-  }
-  @keyframes drift{
-    0%{ transform:translateX(-10vw); }
-    100%{ transform:translateX(110vw); }
-  }
-
-  .moon{
-    position:absolute; top:8%; right:12%;
-    width:90px; height:90px; border-radius:50%;
-    background: radial-gradient(circle at 35% 35%, #fffef2, var(--gold) 70%);
-    box-shadow: 0 0 60px 20px rgba(244,211,94,0.35), 0 0 120px 60px rgba(244,211,94,0.12);
-    transition: all var(--transition-slow);
-  }
-  .sky.mood-sunrise .moon{ opacity:0; transform:translateY(-40px); }
-  .sky.mood-forever .moon{
-    width:220px; height:220px; top:12%; right:50%; transform:translateX(50%);
-    box-shadow: 0 0 140px 50px rgba(244,211,94,0.4), 0 0 240px 100px rgba(244,211,94,0.15);
-  }
-
-  .shooting-star{
-    position:absolute; width:2px; height:2px; background:var(--warm-white);
-    border-radius:50%; top:-5%;
-    box-shadow: 0 0 6px 2px rgba(255,255,255,0.8);
-    animation: shoot 1.6s linear forwards;
-  }
-  .shooting-star::before{
-    content:''; position:absolute; top:50%; right:0; width:120px; height:1px;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.9));
-    transform:translateY(-50%);
-  }
-  @keyframes shoot{
-    0%{ transform: translate(0,0) rotate(35deg); opacity:1; }
-    100%{ transform: translate(-500px, 500px) rotate(35deg); opacity:0; }
-  }
-
-  .rain-layer{ position:absolute; inset:0; opacity:0; transition:opacity 1.8s ease; pointer-events:none; }
-  .sky.mood-rain .rain-layer{ opacity:1; }
-  .raindrop{
-    position:absolute; width:1px; height:60px; top:-10%;
-    background:linear-gradient(180deg, transparent, rgba(200,210,255,0.35));
-    animation: fall linear infinite;
-  }
-  @keyframes fall{
-    0%{ transform:translateY(0); }
-    100%{ transform:translateY(110vh); }
-  }
-
-  /* hidden clickable memory stars */
-  .memory-star{
-    position:absolute; width:14px; height:14px; cursor:pointer; z-index:2;
-    background:radial-gradient(circle, #fff, var(--gold) 60%, transparent 70%);
-    border-radius:50%; border:none;
-    box-shadow:0 0 10px 3px rgba(244,211,94,0.6);
-    animation: twinkle 3s ease-in-out infinite;
-  }
-  .memory-star:hover{ transform:scale(1.6); }
-
-  /* ============ TOP UI ============ */
-  .music-toggle{
-    position:fixed; bottom:22px; right:22px; z-index:50;
-    width:52px; height:52px; border-radius:50%; border:1px solid rgba(248,248,248,0.25);
-    background:rgba(28,22,56,0.6); backdrop-filter:blur(8px);
-    color:var(--warm-white); font-size:20px; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-  }
-  .music-toggle:hover{ box-shadow:0 0 20px rgba(244,211,94,0.4); transform:scale(1.05); }
-  .music-toggle.playing{ box-shadow:0 0 20px rgba(247,198,217,0.5); }
-
-  .letter-fab{
-    position:fixed; bottom:22px; left:22px; z-index:50;
-    padding:12px 18px; border-radius:30px; border:1px solid rgba(248,248,248,0.25);
-    background:rgba(28,22,56,0.6); backdrop-filter:blur(8px);
-    color:var(--warm-white); font-size:14px; cursor:pointer;
-    display:flex; align-items:center; gap:8px;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-  }
-  .letter-fab:hover{ box-shadow:0 0 20px rgba(244,211,94,0.35); transform:translateY(-2px); }
-
-  /* ============ LAYOUT ============ */
-  main{ position:relative; z-index:1; }
-  section{ position:relative; padding:14vh 6vw; max-width:1100px; margin:0 auto; }
+  .ambient{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:2; }
+  .ground{ position:absolute; inset:0; z-index:1; }
+  .content{ position:relative; z-index:5; max-width:600px; }
 
   .eyebrow{
-    font-family:'Poppins',sans-serif; font-size:12px; letter-spacing:4px; text-transform:uppercase;
-    color:var(--gold); opacity:0.85; margin-bottom:10px; display:flex; align-items:center; gap:10px;
-  }
-  .eyebrow::before{ content:'⭐'; font-size:12px; }
-
-  h2.chapter-title{ font-size:clamp(2.6rem, 6vw, 4.2rem); color:var(--warm-white); margin-bottom:6px; }
-  .chapter-sub{ font-size:14px; letter-spacing:2px; text-transform:uppercase; opacity:0.6; margin-bottom:40px; }
-
-  .reveal{
-    opacity:0; transform:translateY(40px);
-    transition: opacity 1s ease, transform 1s ease;
-  }
-  .reveal.in{ opacity:1; transform:translateY(0); }
-
-  /* glass cards */
-  .glass{
-    background:rgba(248,248,248,0.06);
-    border:1px solid rgba(248,248,248,0.12);
-    border-radius:18px;
-    backdrop-filter:blur(10px);
-    box-shadow:0 8px 32px rgba(0,0,0,0.35);
-  }
-  .glow{ box-shadow:0 0 40px rgba(244,211,94,0.18), 0 8px 32px rgba(0,0,0,0.35); }
-
-  /* photo grid */
-  .photo-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:22px; margin:36px 0; }
-  .photo-frame{
-    position:relative; aspect-ratio:4/5; border-radius:16px; overflow:hidden;
-    background:linear-gradient(160deg, rgba(247,198,217,0.12), rgba(244,211,94,0.08));
-    border:1px solid rgba(248,248,248,0.15);
-    transition: transform 0.5s ease;
-    animation: float 6s ease-in-out infinite;
-  }
-  .photo-frame:nth-child(2n){ animation-delay:1.2s; }
-  .photo-frame:nth-child(3n){ animation-delay:2.4s; }
-  .photo-frame:hover{ transform:translateY(-8px) scale(1.02); }
-  @keyframes float{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
-  .photo-frame img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .photo-placeholder{
-    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:8px; color:rgba(248,248,248,0.55); font-size:13px; text-align:center; padding:10px;
-  }
-  .photo-placeholder .ic{ font-size:26px; }
-  .photo-caption{
-    position:absolute; bottom:0; left:0; right:0; padding:10px 12px;
-    font-size:12px; background:linear-gradient(0deg, rgba(11,16,38,0.85), transparent);
+    letter-spacing:.35em; text-transform:uppercase; font-size:.65rem; opacity:.75;
+    margin-bottom:1rem;
   }
 
-  /* letters */
-  .letter{
-    padding:40px clamp(20px,4vw,50px); margin:30px 0; position:relative;
+  /* ---- transition veil ---- */
+  #veil{
+    position:fixed; inset:0; z-index:200; pointer-events:none;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,216,122,.10), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(232,143,160,.10), transparent 45%),
+      linear-gradient(160deg, #0c0818, #1b1330 55%, #0c0818);
+    transform:translateX(-100%);
   }
-  .letter .letter-text{
-    font-size:clamp(1.3rem, 2.4vw, 1.7rem); line-height:1.7; color:var(--warm-white);
-    white-space:pre-wrap;
+  .veil-cover{ transition:transform .68s cubic-bezier(.76,0,.24,1); transform:translateX(0); }
+  .veil-reveal{ transition:transform .68s cubic-bezier(.76,0,.24,1); transform:translateX(100%); }
+  .veil-reset{ transition:none !important; transform:translateX(-100%); }
+
+  /* ---- hotspots ---- */
+  .hotspot{
+    position:absolute; background:none; border:none; cursor:pointer; z-index:6;
+    padding:0; line-height:1; pointer-events:auto;
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));
+    transition:transform .3s ease;
   }
-  .letter .sign{ margin-top:18px; font-family:'Caveat',cursive; font-size:1.5rem; color:var(--gold); }
-  .letter .quill{ position:absolute; top:-14px; left:30px; font-size:22px; }
-
-  /* buttons */
-  .btn{
-    display:inline-block; padding:12px 26px; border-radius:30px; cursor:pointer;
-    border:1px solid var(--gold); color:var(--gold); background:transparent;
-    font-family:'Poppins',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase;
-    transition: all 0.3s ease;
+  .hotspot:hover, .hotspot:focus-visible{ transform:scale(1.12); }
+  .hotspot:focus-visible{ outline:2px solid var(--gold); outline-offset:4px; border-radius:10px; }
+  .hotspot .tag{
+    position:absolute; bottom:110%; left:50%; transform:translateX(-50%);
+    background:rgba(20,12,32,.85); border:1px solid rgba(255,255,255,.2);
+    padding:.25rem .6rem; border-radius:999px; font-size:.68rem; white-space:nowrap;
+    opacity:0; transition:opacity .25s ease; letter-spacing:.03em;
   }
-  .btn:hover{ background:var(--gold); color:var(--midnight); box-shadow:0 0 25px rgba(244,211,94,0.5); }
+  .hotspot:hover .tag, .hotspot:focus-visible .tag{ opacity:1; }
 
-  /* ============ INTRO ============ */
-  .intro{
-    position:fixed; inset:0; z-index:100; background:var(--midnight);
-    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
-    transition: opacity 1.2s ease, visibility 1.2s ease;
-    padding:20px;
+  /* ---- generic sky elements ---- */
+  .star{ position:absolute; background:#fff; border-radius:50%; animation:twinkle ease-in-out infinite; }
+  @keyframes twinkle{ 0%,100%{opacity:.2;} 50%{opacity:1;} }
+  .firefly{
+    position:absolute; width:6px; height:6px; border-radius:50%;
+    background:radial-gradient(circle,#fff8cf 0%, var(--gold) 60%, transparent 100%);
+    box-shadow:0 0 8px 3px rgba(255,216,122,.7);
+    animation:driftfly 9s ease-in-out infinite, pulse 2.3s ease-in-out infinite;
   }
-  .intro.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
-  .intro h1{ font-size:clamp(3rem,10vw,6rem); color:var(--warm-white); text-shadow:0 0 40px rgba(244,211,94,0.4); }
-  .intro p{ opacity:0.7; margin:14px 0 34px; letter-spacing:2px; font-size:13px; text-transform:uppercase; }
-
-  /* ============ HERO ============ */
-  .hero{ min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding-top:0; }
-  .hero h1{ font-size:clamp(3.2rem,11vw,7rem); text-shadow:0 0 50px rgba(244,211,94,0.35); }
-  .hero .tag{ font-size:clamp(1.1rem,2.5vw,1.5rem); font-family:'Caveat',cursive; color:var(--soft-pink); margin-top:16px; }
-  .scroll-cue{ margin-top:60px; opacity:0.6; font-size:12px; letter-spacing:3px; text-transform:uppercase; animation:bob 2s ease-in-out infinite; }
-  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(10px);} }
-
-  /* ============ CONSTELLATION PROGRESS (desktop) ============ */
-  .constellation{
-    position:fixed; right:26px; top:50%; transform:translateY(-50%); z-index:30;
-    display:flex; flex-direction:column; align-items:center; gap:0;
+  @keyframes driftfly{ 0%,100%{transform:translate(0,0);} 33%{transform:translate(30px,-24px);} 66%{transform:translate(-20px,16px);} }
+  @keyframes pulse{ 0%,100%{opacity:.25;} 50%{opacity:1;} }
+  .cloud{
+    position:absolute; border-radius:50%; background:rgba(255,255,255,.12);
+    filter:blur(1px); animation:drift linear infinite;
   }
-  @media (max-width:900px){ .constellation{ display:none; } }
-  .const-node{ display:flex; flex-direction:column; align-items:center; }
-  .const-dot{
-    width:9px; height:9px; border-radius:50%; background:rgba(248,248,248,0.25);
-    transition: background 0.4s ease, box-shadow 0.4s ease;
+  @keyframes drift{ from{ transform:translateX(-20vw);} to{ transform:translateX(120vw);} }
+  .bird{ position:absolute; font-size:14px; opacity:.8; animation:flyacross 9s linear forwards; }
+  @keyframes flyacross{ from{ transform:translate(-10vw,0);} to{ transform:translate(110vw,-6vh);} }
+  .petal{ position:absolute; top:-5vh; animation:fall linear infinite; opacity:.85; }
+  @keyframes fall{ 0%{transform:translate(0,0) rotate(0deg);} 100%{transform:translate(var(--drift,40px),110vh) rotate(360deg);} }
+  .shooting-star{
+    position:absolute; width:3px; height:3px; border-radius:50%; background:#fff;
+    box-shadow:0 0 6px 2px #fff, -40px 8px 10px 2px rgba(255,255,255,.5);
+    animation:shoot 1.8s linear forwards; cursor:pointer; z-index:7; pointer-events:auto;
   }
-  .const-dot.active{ background:var(--gold); box-shadow:0 0 12px 3px rgba(244,211,94,0.7); }
-  .const-line{ width:1px; height:34px; background:rgba(248,248,248,0.18); }
-  .const-line.active{ background:var(--gold); box-shadow:0 0 6px rgba(244,211,94,0.5); }
+  @keyframes shoot{ from{ transform:translate(0,0);} to{ transform:translate(-46vw,26vh);} }
 
-  /* ============ REASONS ============ */
-  .reasons-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; margin-top:30px; }
-  .reason-card{
-    padding:22px; font-family:'Caveat',cursive; font-size:1.3rem; line-height:1.4;
-    cursor:default; transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* ---- shared note card / modal ---- */
+  .note-card{
+    background:rgba(28,18,42,.55); border:1px solid rgba(255,255,255,.18);
+    backdrop-filter:blur(6px); border-radius:18px; padding:1.6rem 1.8rem;
+    box-shadow:0 10px 40px rgba(0,0,0,.3);
   }
-  .reason-card:hover{ transform:translateY(-6px); box-shadow:0 0 30px rgba(247,198,217,0.25); }
-  .reason-num{ font-family:'Poppins'; font-size:11px; color:var(--gold); letter-spacing:2px; display:block; margin-bottom:10px; }
-
-  /* ============ COUNTDOWN ============ */
-  .countdown{ display:flex; gap:22px; flex-wrap:wrap; justify-content:center; margin-top:30px; }
-  .cd-box{ padding:20px 26px; text-align:center; min-width:90px; }
-  .cd-num{ font-size:2.2rem; color:var(--gold); font-weight:600; }
-  .cd-label{ font-size:11px; letter-spacing:2px; text-transform:uppercase; opacity:0.7; margin-top:4px; }
-
-  /* ============ SECRET SECTION ============ */
-  .secret-gate{ padding:40px; text-align:center; }
-  .secret-gate input{
-    background:rgba(248,248,248,0.08); border:1px solid rgba(248,248,248,0.25); border-radius:30px;
-    padding:12px 20px; color:var(--warm-white); font-family:'Poppins'; text-align:center; margin:16px 0;
-    width:min(280px,80%);
+  #modal-overlay{
+    position:fixed; inset:0; z-index:100; display:none; align-items:center; justify-content:center;
+    background:rgba(8,4,16,.75); backdrop-filter:blur(4px); padding:5vw;
   }
-  .secret-content{ display:none; }
-  .secret-content.unlocked{ display:block; }
-
-  /* ============ MODAL ============ */
-  .modal-bg{
-    position:fixed; inset:0; background:rgba(5,6,15,0.75); backdrop-filter:blur(6px);
-    display:flex; align-items:center; justify-content:center; z-index:200;
-    opacity:0; visibility:hidden; transition:opacity 0.4s ease, visibility 0.4s ease; padding:20px;
+  #modal-overlay.show{ display:flex; }
+  .modal-card{
+    max-width:520px; width:100%; text-align:left;
+    background:linear-gradient(180deg, rgba(45,32,60,.96), rgba(28,18,42,.98));
+    border:1px solid rgba(255,255,255,.2); border-radius:20px; padding:2.1rem 1.9rem;
+    box-shadow:0 30px 80px rgba(0,0,0,.5); animation:pop .35s ease;
   }
-  .modal-bg.show{ opacity:1; visibility:visible; }
-  .modal-box{ max-width:560px; width:100%; padding:44px 36px; position:relative; }
-  .modal-close{ position:absolute; top:14px; right:18px; cursor:pointer; font-size:22px; opacity:0.6; background:none; border:none; color:var(--warm-white); }
-  .modal-close:hover{ opacity:1; }
+  @keyframes pop{ from{opacity:0; transform:scale(.94) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);} }
+  .modal-card h3{ font-size:1.3rem; color:var(--gold); margin-bottom:.7rem; }
+  .modal-card p{ line-height:1.65; font-size:1.06rem; margin:0 0 .8rem; }
+  .modal-photo{
+    width:100%; height:150px; border-radius:12px; margin-bottom:1rem;
+    display:flex; align-items:center; justify-content:center; text-align:center; padding:1rem;
+    background:repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 10px, rgba(255,255,255,.02) 10px 20px);
+    border:1px dashed rgba(255,255,255,.3); font-size:.78rem; opacity:.6;
+  }
+  .modal-close{
+    margin-top:.4rem; background:none; border:1px solid rgba(255,255,255,.35); color:var(--cream);
+    padding:.5rem 1.2rem; border-radius:999px; cursor:pointer; letter-spacing:.08em;
+    text-transform:uppercase; font-size:.7rem;
+  }
+  .modal-close:hover{ background:rgba(255,255,255,.12); }
 
-  footer{ text-align:center; padding:10vh 6vw 8vh; opacity:0.6; font-size:13px; }
-  footer .script{ font-size:2rem; color:var(--gold); display:block; margin-bottom:10px; opacity:1;}
+  /* ---- wayfinder nav ---- */
+  #wayfinder{
+    position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:60;
+    display:flex; gap:.5rem; background:rgba(15,9,26,.55); border:1px solid rgba(255,255,255,.15);
+    border-radius:999px; padding:.4rem; backdrop-filter:blur(6px);
+  }
+  #wayfinder button{
+    width:36px; height:36px; border-radius:50%; border:none; cursor:pointer;
+    background:rgba(255,255,255,.08); font-size:1.05rem; color:var(--cream);
+    display:flex; align-items:center; justify-content:center; transition:background .25s ease, transform .25s ease;
+    opacity:0; transform:scale(.4); animation:unlock .4s ease forwards;
+  }
+  #wayfinder button.current{ background:linear-gradient(135deg, var(--gold), var(--rose)); }
+  #wayfinder button:hover{ transform:scale(1.1); }
+  @keyframes unlock{ to{ opacity:1; transform:scale(1); } }
 
-  @media (max-width:600px){ section{ padding:10vh 6vw; } }
+  .prompt{ margin-top:1.6rem; font-size:.9rem; opacity:.7; animation:bob 2.6s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(7px);} }
+
+  /* ============ scene-specific backgrounds ============ */
+  .scene-intro{ background:#050310; }
+  .scene-entrance{ background:linear-gradient(180deg,#241c3f,#170f27 60%,#0f0a1c); }
+  .scene-garden{ background:linear-gradient(180deg,#2c2350,#1c1533 65%,#120c22); }
+  .scene-river{ background:linear-gradient(180deg,#20264a,#151a33 65%,#0d1122); }
+  .scene-cottage{ background:linear-gradient(180deg,#1f1a3a,#150f28 65%,#0d0a1c); }
+  .scene-interior{ background:radial-gradient(circle at 50% 70%, #4a2f22, #241708 70%); }
+  .scene-tree{ background:linear-gradient(180deg,#231a3d,#160f28 65%,#0d0a1c); }
+  .scene-secret{ background:radial-gradient(ellipse at 50% 10%, rgba(255,214,235,.16), transparent 60%), linear-gradient(180deg,#3a2a4a,#26203e 60%,#1c1830); }
+  .scene-dock{ background:linear-gradient(180deg,#0d0e24,#0a0c1d 60%,#070818); }
+  .scene-hill{ background:linear-gradient(180deg,#ffb27a,#e88fa0 45%,#7c6a9c 85%,#4a3a72); }
+
+  /* ---- entrance gate ---- */
+  .gate-frame{ position:relative; width:min(60vw,320px); height:min(60vw,320px); margin:0 auto 1rem; }
+  .gate-arch{ position:absolute; inset:0; border-radius:50% 50% 8px 8px / 60% 60% 8px 8px; border:8px solid #f4ede0; box-shadow:0 0 40px rgba(255,255,255,.12) inset; }
+  .gate-doors{ position:absolute; inset:8px; display:flex; overflow:hidden; border-radius:50% 50% 6px 6px / 60% 60% 6px 6px; }
+  .gate-door{ width:50%; height:100%; background:repeating-linear-gradient(90deg,#efe6d4 0 6px,#e6dac2 6px 12px); transition:transform 1.1s cubic-bezier(.65,0,.35,1); }
+  .gate-door.l{ transform-origin:left center; border-right:2px solid rgba(0,0,0,.1);} 
+  .gate-door.r{ transform-origin:right center; border-left:2px solid rgba(0,0,0,.1);} 
+  .scene-entrance.opened .gate-door.l{ transform:rotateY(-80deg); }
+  .scene-entrance.opened .gate-door.r{ transform:rotateY(80deg); }
+
+  /* ---- flower field ---- */
+  .flower-field{ position:relative; width:min(94vw,820px); height:44vh; min-height:300px; margin-top:.5rem; }
+  .flower{ font-size:clamp(1.5rem,3.2vw,2.2rem); animation:sway 4.5s ease-in-out infinite; transform-origin:bottom center; }
+  @keyframes sway{ 0%,100%{transform:rotate(-4deg);} 50%{transform:rotate(4deg);} }
+  .flower.bloomed{ animation:bloom .5s ease forwards; }
+  @keyframes bloom{ 0%{transform:scale(1);} 50%{transform:scale(1.5) rotate(0deg);} 100%{transform:scale(1.15) rotate(0deg);} }
+  .rabbit{ font-size:1.6rem; animation:hop 3.2s ease-in-out infinite; }
+  @keyframes hop{ 0%,100%{transform:translateY(0);} 45%{transform:translateY(-10px);} 55%{transform:translateY(-10px);} }
+
+  /* ---- river / bridge ---- */
+  .river-band{ position:relative; width:min(94vw,860px); height:90px; border-radius:44px; overflow:hidden; background:linear-gradient(180deg,#4c6b9c,#28345a); box-shadow:0 8px 30px rgba(0,0,0,.4); margin-top:1rem; }
+  .river-band::before{ content:""; position:absolute; inset:0; background:repeating-linear-gradient(120deg, rgba(255,255,255,.16) 0 2px, transparent 2px 40px); animation:shimmer 6s linear infinite; }
+  @keyframes shimmer{ 0%{background-position:0 0;} 100%{background-position:200px 0;} }
+  .duck,.leaf{ position:absolute; animation:floatriver linear infinite; }
+  .duck{ font-size:1.2rem; top:16px; } .leaf{ font-size:.85rem; top:44px; opacity:.8; }
+  @keyframes floatriver{ 0%{left:-8%;} 100%{left:108%;} }
+  .bridge-btn{ position:relative; margin-top:1.6rem; background:linear-gradient(180deg,#8a6a4a,#6b4e34); border:none; border-radius:8px; padding:.9rem 1.6rem; color:var(--cream); cursor:pointer; font-size:.95rem; letter-spacing:.05em; box-shadow:0 8px 20px rgba(0,0,0,.35); }
+  .bridge-btn:hover{ filter:brightness(1.1); }
+
+  /* ---- cottage ---- */
+  .cottage-scene{ position:relative; width:min(80vw,420px); }
+  .smoke{ animation:rise 4s ease-in-out infinite; }
+  @keyframes rise{ 0%{opacity:.55; transform:translateY(0);} 100%{opacity:0; transform:translateY(-38px) translateX(6px);} }
+  .door-hit{ cursor:pointer; }
+  .cat{ position:absolute; font-size:1.4rem; }
+
+  /* ---- memory tree ---- */
+  .tree-wrap{ position:relative; width:min(90vw,700px); height:48vh; min-height:340px; }
+  .trunk{ position:absolute; left:50%; bottom:0; width:20px; height:36%; background:linear-gradient(180deg,#6b4a3a,#4a3226); transform:translateX(-50%); border-radius:6px 6px 0 0; }
+  .canopy{ position:absolute; left:50%; top:0; width:86%; height:60%; transform:translateX(-50%); }
+  .blossom{ position:absolute; border-radius:50%; background:radial-gradient(circle at 35% 30%,#ffd9e6,var(--rose)); opacity:.9; }
+  .lantern{ position:absolute; width:24px; height:32px; animation:swingL 4.5s ease-in-out infinite; transform-origin:top center; }
+  @keyframes swingL{ 0%,100%{transform:rotate(-6deg);} 50%{transform:rotate(6deg);} }
+  .lantern-string{ position:absolute; left:50%; top:-28px; width:1px; height:28px; background:rgba(255,255,255,.4); transform:translateX(-50%); }
+  .lantern-glass{ width:100%; height:100%; border-radius:50% 50% 40% 40%; background:radial-gradient(circle at 40% 30%,#fff3c4,var(--gold)); box-shadow:0 0 16px 6px rgba(255,216,122,.55); }
+
+  /* ---- secret garden ---- */
+  .secret-title{ font-family:var(--font-script); font-size:clamp(1.6rem,4vw,2.3rem); color:#ffd6e8; }
+  .secret-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1rem; max-width:760px; margin-top:1.6rem; }
+  .secret-card{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); border-radius:16px; padding:1.1rem 1.1rem; text-align:left; animation:hoverf 5s ease-in-out infinite; }
+  .secret-card:nth-child(2n){ animation-delay:.6s; } .secret-card:nth-child(3n){ animation-delay:1.2s; }
+  @keyframes hoverf{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+  .secret-card .icon{ font-size:1.4rem; display:block; margin-bottom:.4rem; }
+  .secret-card p{ margin:0; font-size:.96rem; line-height:1.5; }
+
+  /* ---- dock ---- */
+  .moon-lg{ width:64px; height:64px; border-radius:50%; margin-bottom:1.2rem; background:radial-gradient(circle at 38% 32%,#fffef2,#ffe9a8 60%,#ffd87a 100%); box-shadow:0 0 60px 18px rgba(255,233,168,.35); }
+  .dock-planks{ width:min(80vw,520px); height:22px; margin-bottom:1.6rem; background:repeating-linear-gradient(90deg,#6b4e34 0 34px,#573f2a 34px 38px); border-radius:4px; box-shadow:0 10px 24px rgba(0,0,0,.35); }
+
+  /* ---- hill ---- */
+  .valley{ position:relative; width:min(90vw,760px); height:200px; margin-bottom:1.2rem; border-radius:16px; overflow:hidden; }
+  .hill-layer{ position:absolute; bottom:0; left:0; width:100%; }
+  .hill-back{ height:70%; background:#2c2050; clip-path:polygon(0 60%,20% 40%,45% 55%,70% 30%,100% 50%,100% 100%,0 100%); }
+  .hill-front{ height:45%; background:#1c1636; clip-path:polygon(0 70%,25% 45%,55% 65%,80% 35%,100% 60%,100% 100%,0 100%); }
+  .valley .glow-dot{ position:absolute; bottom:22%; left:48%; width:9px; height:9px; border-radius:50%; background:var(--gold); box-shadow:0 0 16px 6px rgba(255,216,122,.7); }
+
+  @media (max-width:640px){
+    .modal-card{ padding:1.5rem 1.2rem; }
+    .secret-grid{ grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
 </style>
 </head>
-<body data-mood="night">
+<body>
 
-<!-- ============ SKY BACKGROUND ============ -->
-<div class="sky" id="sky">
-  <div class="stars" id="stars"></div>
-  <div class="cloud" style="width:340px;height:120px;top:14%;left:-20%;"></div>
-  <div class="cloud" style="width:260px;height:100px;top:32%;left:-30%;animation-duration:80s;animation-delay:-20s;"></div>
-  <div class="moon" id="moon"></div>
-  <div class="rain-layer" id="rainLayer"></div>
+<!-- Optional music — uncomment and point at your own file
+<audio id="bg-music" src="your-song.mp3" loop autoplay style="display:none"></audio>
+-->
+
+<div id="app">
+  <div id="stage"></div>
+  <nav id="wayfinder" aria-label="Places you've discovered"></nav>
 </div>
+<div id="veil"></div>
 
-<div class="constellation" id="constellation"></div>
-
-<!-- ============ INTRO ============ -->
-<div class="intro" id="intro">
-  <h1 class="script">Our Universe</h1>
-  <p>a story told in stars, for Zaiiny</p>
-  <button class="btn" id="enterBtn">✨ Begin Our Story</button>
+<div id="modal-overlay">
+  <div class="modal-card" id="modal-card"></div>
 </div>
-
-<button class="music-toggle" id="musicToggle" title="Play music">♪</button>
-<audio id="bgMusic" loop src="12.mp3"></audio>
-
-<button class="letter-fab" id="randomLetterBtn">💌 Open a random letter</button>
-
-<!-- ============ MODAL: random letter ============ -->
-<div class="modal-bg" id="letterModal">
-  <div class="modal-box glass glow">
-    <button class="modal-close" id="closeLetterModal">✕</button>
-    <div class="eyebrow">a letter, just because</div>
-    <p class="letter-text" id="randomLetterText"></p>
-    <p class="sign">— [Humayun]</p>
-  </div>
-</div>
-
-<!-- ============ MODAL: memory star ============ -->
-<div class="modal-bg" id="memoryModal">
-  <div class="modal-box glass glow">
-    <button class="modal-close" id="closeMemoryModal">✕</button>
-    <div class="eyebrow">a hidden memory</div>
-    <p class="letter-text" id="memoryText"></p>
-  </div>
-</div>
-
-<main>
-
-  <!-- ============ HERO ============ -->
-  <section class="hero">
-    <div class="eyebrow" style="justify-content:center;">our universe</div>
-    <h1 class="reveal in">Every star is a memory.</h1>
-    <p class="tag reveal in">Every constellation, a chapter. Every photo, a moment that changed us.</p>
-    <div class="scroll-cue">scroll to begin ↓</div>
-  </section>
-
-  <!-- ============ CHAPTER 1 — THE BEGINNING ============ -->
-  <section class="chapter" data-mood="night" data-const="0">
-    <div class="eyebrow reveal">Chapter One</div>
-    <h2 class="chapter-title reveal">The Beginning</h2>
-    <p class="chapter-sub reveal">two strangers, one quiet start</p>
-
-    <div class="photo-grid reveal">
-      <div class="photo-frame glass">
-        <div class="photo-placeholder"><span class="ic">🤍</span>Our first photo together</div>
-        <img src="1.jpeg" alt="Our first photo together">
-        <div class="photo-caption">the very first one</div>
-      </div>
-    </div>
-
-    <div class="letter glass reveal">
-      <div class="quill">🖋️</div>
-      <p class="letter-text" data-typewriter>We started as two strangers who didn't know they were about to become each other's home. I remember how ordinary that beginning felt — just talking, just laughing, just two people slowly choosing to know each other a little more each day. Neither of us said it out loud, but somewhere in those early conversations, something quiet was already becoming permanent.</p>
-      <p class="sign">— [Humayun]</p>
-    </div>
-  </section>
-
-  <!-- ============ CHAPTER 2 — GETTING CLOSER ============ -->
-  <section class="chapter" data-mood="night" data-const="1">
-    <div class="eyebrow reveal">Chapter Two</div>
-    <h2 class="chapter-title reveal">Getting Closer</h2>
-    <p class="chapter-sub reveal">the slow, certain pull toward each other</p>
-
-    <div class="photo-grid reveal">
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">💗</span>A cute memory</div><img src="1.jpeg" alt=""></div>
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">💗</span>A cute memory</div><img src="2.jpeg" alt=""></div>
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">💗</span>A cute memory</div><img src="3.jpeg" alt=""></div>
-    </div>
-
-    <div class="letter glass reveal">
-      <p class="letter-text" data-typewriter>Somewhere between the long calls and the small jokes only we understood, "getting to know you" turned into "I don't want to stop talking to you." You became the person I looked forward to all day. I fell for you slowly, and then all at once — and I have never once regretted a single step of that fall.</p>
-      <p class="sign">— [Humayun]</p>
-    </div>
-
-    <p style="opacity:0.55; font-size:13px; text-align:center; margin-top:10px;"></p>
-  </section>
-
-  <!-- ============ CHAPTER 3 — THE HARD DAYS ============ -->
-  <section class="chapter" data-mood="rain" data-const="2">
-    <div class="eyebrow reveal">Chapter Three</div>
-    <h2 class="chapter-title reveal">The Hard Days</h2>
-    <p class="chapter-sub reveal">where it rained, and we stayed anyway</p>
-
-    <div class="letter glass reveal">
-      <p class="letter-text" data-typewriter>Our story was never perfect, and I don't want this website to pretend it was. We argued. We misunderstood each other. There were nights that ended in tears and silences that lasted too long. I carried anger I didn't know how to put down, and fears that made me push away the one person who never deserved to be pushed. We even broke apart, more than once.
-
-But every single time, we found our way back to each other — not because it was easy, but because what we had was worth more than our pride. You stayed through the hardest version of me. You didn't just love the parts of me that were easy to love; you stayed for the broken parts too, and slowly, gently, you helped me believe they weren't unlovable at all.</p>
-      <p class="sign">— [Humayun]</p>
-    </div>
-  </section>
-
-  <!-- ============ CHAPTER 4 — YOU CHANGED ME ============ -->
-  <section class="chapter" data-mood="sunrise" data-const="3">
-    <div class="eyebrow reveal" style="color:var(--midnight);">Chapter Four</div>
-    <h2 class="chapter-title reveal" style="color:var(--midnight); text-shadow:none;">You Changed Me</h2>
-    <p class="chapter-sub reveal" style="color:var(--midnight); opacity:0.7;">how the sun started rising in me again</p>
-
-    <div class="photo-grid reveal">
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">🌅</span>A happier moment</div><img src="3.jpeg" alt=""></div>
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">🌅</span>A happier moment</div><img src="4.jpeg" alt=""></div>
-    </div>
-
-    <div class="letter glass reveal" style="color:var(--midnight);">
-      <p class="letter-text" style="color:var(--midnight);" data-typewriter>When you found me, I wasn't the man I wanted to be. I was carrying old wounds, anger I didn't understand, panic that came from nowhere, and habits that were quietly hurting me — including things I needed to leave behind entirely. You never gave up on me while I found the strength to let them go. Every day I got a little better, because I wanted to be someone who deserved you.
-
-You healed parts of me I thought were permanent. The child in me who missed certain kinds of love finally felt safe, chosen, important. Watching you slowly feel safe enough to ask for flowers, for little gifts, for a handwritten letter — watching your own inner child learn to smile freely — is one of the most beautiful things I have ever witnessed. Your happiness became mine. You didn't just love me. You helped me become a better man.</p>
-      <p class="sign" style="color:#7a4b2e;">— [Humayun]</p>
-    </div>
-  </section>
-
-  <!-- ============ CHAPTER 5 — OUR ADVENTURES ============ -->
-  <section class="chapter" data-mood="night" data-const="4">
-    <div class="eyebrow reveal">Chapter Five</div>
-    <h2 class="chapter-title reveal">Our Adventures</h2>
-    <p class="chapter-sub reveal">trips, dates, selfies, and everything in between</p>
-
-    <div class="photo-grid reveal">
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">🚗</span>On the road</div><img src="7.jpeg" alt=""></div>
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">🛶</span>The lake, Kashmir</div><img src="13.jpeg" alt=""></div>
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">🤝</span>Holding on</div><img src="9.jpeg" alt=""></div>
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">😂</span>A funny moment</div><img src="10.jpeg" alt=""></div>
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">🍽️</span>Dinner together</div><img src="11.jpeg" alt=""></div>
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">🌿</span>Drifting the lilies</div><img src="12.jpeg" alt=""></div>
-    </div>
-
-    <div class="letter glass reveal">
-      <p class="letter-text" data-typewriter>Some of my favorite memories aren't the big, planned ones — they're the small, ridiculous ones. The wrong turns that became the best part of the trip. The laugh you can't stop once it starts. I want this chapter to keep growing every time we make a new memory, because with you, every ordinary day quietly turns into an adventure.</p>
-      <p class="sign">— [Humayun]</p>
-    </div>
-  </section>
-
-  <!-- ============ CHAPTER 6 — TODAY ============ -->
-  <section class="chapter" data-mood="night" data-const="5">
-    <div class="eyebrow reveal">Chapter Six</div>
-    <h2 class="chapter-title reveal">Today</h2>
-    <p class="chapter-sub reveal">where our story currently stands</p>
-
-    <div class="photo-grid reveal">
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">📷</span>Latest photo</div><img src="13.jpeg" alt=""></div>
-      <div class="photo-frame glass"><div class="photo-placeholder"><span class="ic">📷</span>Add your next one here<br><small>/ch6-2.jpeg</small></div><img src="14.jpeg" alt="" onerror="this.style.display='none'"></div>
-    </div>
-
-    <div class="letter glass reveal">
-      <p class="letter-text" data-typewriter>Lately, things have just been... calm. We haven't fought in a while, and it's a strange, good kind of quiet — the kind that used to feel unfamiliar to me. I feel steadier now. You feel safer, more comfortable, more like yourself around me, and I feel reassured too — like we're finally standing on solid ground instead of waiting for the next storm.
-I don't take this peace for granted. I know what it took to get here — for both of us. Right now, there's nothing dramatic to report, no big moment to mark. Just two people who stopped bracing for impact and started actually resting in each other. That might be the most important chapter yet.</p>
-      <p class="sign">— Humayun</p>
-    </div>
-  </section>
-
-  <!-- ============ FUTURE / DREAMS ============ -->
-  <section class="chapter" data-mood="night">
-    <div class="eyebrow reveal">Chapter Seven</div>
-    <h2 class="chapter-title reveal">What I Still Dream About</h2>
-    <p class="chapter-sub reveal">the chapters we haven't written yet</p>
-
-    <div class="letter glass reveal">
-      <p class="letter-text" data-typewriter>I think about growing old with you — really old, the kind where we forget what we were arguing about halfway through. I think about building a home that feels like both of us. Maybe a family, someday. More trips, more terrible selfies, more anniversaries, more ordinary Tuesdays that somehow still feel special because you're in them.
-
-I don't know everything the future holds, but I know this: I want to keep choosing you, on the easy days and the hard ones, for as long as I get to.</p>
-      <p class="sign">— [Humayun]</p>
-    </div>
-  </section>
-
-  <!-- ============ REASONS I LOVE YOU ============ -->
-  <section class="chapter">
-    <div class="eyebrow reveal">an ongoing list</div>
-    <h2 class="chapter-title reveal">Reasons I Love You</h2>
-    <p class="chapter-sub reveal">roz update karta rahunga</p>
-    <div class="reasons-grid" id="reasonsGrid"></div>
-  </section>
-
-  <!-- ============ ANNIVERSARY COUNTDOWN ============ -->
-  <section class="chapter" style="text-align:center;">
-    <div class="eyebrow reveal" style="justify-content:center;">counting down</div>
-    <h2 class="chapter-title reveal">Until Our  Anniversary</h2>
-    <div class="countdown" id="countdown"></div>
-    <p style="opacity:0.5; font-size:12px; margin-top:16px;"></p>
-  </section>
-
-  <!-- ============ SECRET SECTION ============ -->
-  <section class="chapter">
-    <div class="eyebrow reveal">🧸 for her eyes only</div>
-    <h2 class="chapter-title reveal">A Secret Place</h2>
-    <div class="secret-gate glass reveal">
-      <p style="opacity:0.75;">This part is just for you. Type the word only you'd know.</p>
-      <br>
-      <input type="text" id="secretInput" placeholder="secret word...">
-      <br>
-      <button class="btn" id="secretBtn">Unlock</button>
-      <p id="secretError" style="color:var(--soft-pink); font-size:12px; margin-top:10px; opacity:0;">that's not quite it — try again 💗</p>
-    </div>
-
-    <div class="secret-content" id="secretContent">
-      <div class="letter glass reveal in" style="margin-top:24px;">
-        <div class="quill">🔒</div>
-        <p class="letter-text">For the days you feel lonely, anxious, or far from me: you are never actually alone. Whatever you're feeling is safe here with me — the good, the messy, all of it. I'm not going anywhere.</p>
-        <p class="sign">— [Humayun]</p>
-      </div>
-      <div class="letter glass reveal in">
-        <div class="quill">🔒</div>
-        <p class="letter-text">[Missing me means you're feeling something real, and I never want you to be ashamed of that. I miss you too, probably more than I say out loud. Distance doesn't change anything about how this works — I'm still yours, from wherever I am.</p>
-        <p class="sign">— [Humayun]</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ FINAL CHAPTER — FOREVER ============ -->
-  <section class="chapter" data-mood="forever" style="text-align:center; min-height:90vh; display:flex; flex-direction:column; justify-content:center;">
-    <div class="eyebrow reveal" style="justify-content:center;">Final Chapter</div>
-    <h2 class="chapter-title reveal" style="font-size:clamp(3rem,8vw,5.5rem);">Forever</h2>
-
-    <div class="photo-frame glass glow reveal" style="max-width:420px; margin:30px auto;">
-      <div class="photo-placeholder"><span class="ic">💫</span>Our favorite picture together</div>
-      <img src="/forever.jpeg" alt="Our favorite photo together">
-    </div>
-
-    <div class="letter glass reveal" style="max-width:640px; margin:20px auto 0;">
-      <p class="letter-text" data-typewriter>This isn't an ending. It's the beginning of forever — and forever is still being written, one small day at a time. Zaiiny, whenever you open this, however many years from now, I need you to know: you have always been, and will always be, deeply loved.</p>
-      <p class="sign">— [Humayun]</p>
-    </div>
-  </section>
-
-  <footer>
-    <span class="script">Our Universe</span>
-    this page is a living diary — it keeps growing as long as we do 🌙
-  </footer>
-
-</main>
 
 <script>
-/* ============================================================
-   CONFIG START — edit the values below to make this yours
-   ============================================================ */
-const CONFIG = {
-  // set your real anniversary date (YYYY-MM-DDTHH:mm:ss)
-  anniversaryDate: "2026-08-10",
+(function(){
+"use strict";
 
-  // the password for the secret 🧸 section (case-insensitive)
-  secretWord: "ourforever",
+/* ---------------- small helpers ---------------- */
+function q(sel, root){ return (root||document).querySelector(sel); }
+function make(tag, cls){ const e=document.createElement(tag); if(cls) e.className=cls; return e; }
+function rand(min,max){ return min + Math.random()*(max-min); }
 
-  // random letters shown in the "open a random letter" button
-  randomLetters: [
-    "I don't need a reason to write to you today. I just wanted you to know I was thinking about you, mid-sentence, in the middle of an ordinary moment, the way I always do.",
-    "Thank you for loving me on the days I made it hard to. Thank you for staying when leaving would have been easier.",
-    "You turned my worst habits into things I no longer needed, simply by being someone worth becoming better for.",
-    "If I could go back, I'd choose you again, every single time — even the hard days, especially the hard days.",
-    "Somewhere between all our ordinary days, you quietly became my favorite place to be.",
-  ],
+function hotspotHTML(opts){
+  // opts: action, payload, left, top, emoji, label, size, extra
+  return `<button class="hotspot ${opts.extra||''}" style="left:${opts.left};top:${opts.top};font-size:${opts.size||'1.8rem'};"
+    data-action="${opts.action}" data-payload="${opts.payload!==undefined?opts.payload:''}" aria-label="${opts.label||opts.action}">
+    ${opts.emoji}<span class="tag">${opts.label||''}</span></button>`;
+}
 
-  // reasons I love you — add as many as you want, they'll auto-number
-  reasons: [
-    "You stayed when it would've been easier to leave.",
-    "You made my inner child feel safe enough to ask for flowers.",
-    "You never gave up on me, even during my worst moments.",
-    "You cry when I hurt, because my pain became yours too.",
-    "You taught me what patience actually looks like.",
-    "The way your face lights up over the smallest gifts.",
-    "You loved my broken parts, not just my good ones.",
-    "You make ordinary Tuesdays feel like something worth remembering.",
-    "You helped me become the man I always wanted to be.",
-    "You chose me, over and over, even after the hard days.",
-  ],
-
-  // hidden memories revealed when a memory-star is clicked
-  hiddenMemories: [
-    "The first time you laughed so hard you couldn't breathe, and I decided I wanted to hear that sound forever.",
-    "That 2am conversation where we said things we'd never told anyone else.",
-    "The first time you cried in front of me, and I realized I never wanted you to feel alone in that again.",
-    "The little gift you didn't expect — and the way your whole face changed.",
-    "The night we almost lost each other, and chose not to.",
-  ],
-};
-/* ============================================================
-   CONFIG END
-   ============================================================ */
-
-// ---- Intro ----
-const intro = document.getElementById('intro');
-document.getElementById('enterBtn').addEventListener('click', () => {
-  intro.classList.add('hidden');
-  const music = document.getElementById('bgMusic');
-  music.play().then(() => {
-    document.getElementById('musicToggle').classList.add('playing');
-    document.getElementById('musicToggle').textContent = '♫';
-  }).catch(()=>{});
-});
-
-// ---- Music toggle ----
-const musicBtn = document.getElementById('musicToggle');
-const music = document.getElementById('bgMusic');
-musicBtn.addEventListener('click', () => {
-  if (music.paused) {
-    music.play().catch(()=>{});
-    musicBtn.classList.add('playing');
-    musicBtn.textContent = '♫';
-  } else {
-    music.pause();
-    musicBtn.classList.remove('playing');
-    musicBtn.textContent = '♪';
+function starsHTML(count, top){
+  let s='';
+  for(let i=0;i<count;i++){
+    const size = rand(1,2.6);
+    s += `<div class="star" style="width:${size}px;height:${size}px;left:${rand(0,100)}vw;top:${rand(0,top||70)}vh;animation-duration:${rand(2,5)}s;"></div>`;
   }
-});
-
-// ---- Generate stars ----
-const starsWrap = document.getElementById('stars');
-for (let i = 0; i < 140; i++) {
-  const s = document.createElement('div');
-  s.className = 'star';
-  const size = Math.random() * 2 + 1;
-  s.style.width = size + 'px';
-  s.style.height = size + 'px';
-  s.style.top = Math.random() * 100 + '%';
-  s.style.left = Math.random() * 100 + '%';
-  s.style.animationDelay = (Math.random() * 4) + 's';
-  s.style.animationDuration = (3 + Math.random() * 3) + 's';
-  starsWrap.appendChild(s);
+  return s;
+}
+function firefliesHTML(count){
+  let s='';
+  for(let i=0;i<count;i++){
+    s += `<div class="firefly" style="left:${rand(5,95)}vw;top:${rand(15,85)}vh;animation-delay:${rand(0,8)}s, ${rand(0,3)}s;"></div>`;
+  }
+  return s;
+}
+function cloudsHTML(count){
+  let s='';
+  for(let i=0;i<count;i++){
+    const w = rand(60,160);
+    s += `<div class="cloud" style="width:${w}px;height:${w*0.4}px;top:${rand(4,26)}vh;animation-duration:${rand(50,90)}s;animation-delay:-${rand(0,60)}s;"></div>`;
+  }
+  return s;
+}
+function petalsHTML(count, chars){
+  let s='';
+  for(let i=0;i<count;i++){
+    const c = chars[i % chars.length];
+    s += `<span class="petal" style="left:${rand(0,100)}vw;--drift:${rand(-80,80)}px;font-size:${rand(11,20)}px;animation-duration:${rand(9,18)}s;animation-delay:-${rand(0,14)}s;">${c}</span>`;
+  }
+  return s;
 }
 
-// ---- Occasional shooting star ----
-function spawnShootingStar(){
-  const s = document.createElement('div');
-  s.className = 'shooting-star';
-  s.style.left = (20 + Math.random() * 60) + '%';
-  s.style.top = (Math.random() * 20) + '%';
-  document.getElementById('sky').appendChild(s);
-  setTimeout(() => s.remove(), 1700);
-}
-setInterval(spawnShootingStar, 7000);
+let activeTimers = [];
+function trackInterval(fn, ms){ const id = setInterval(fn, ms); activeTimers.push(id); return id; }
+function trackTimeout(fn, ms){ const id = setTimeout(fn, ms); activeTimers.push(id); return id; }
+function clearAllTimers(){ activeTimers.forEach(id=>{ clearInterval(id); clearTimeout(id); }); activeTimers = []; }
 
-// ---- Rain drops (created once, shown via opacity) ----
-const rainLayer = document.getElementById('rainLayer');
-for (let i = 0; i < 60; i++) {
-  const d = document.createElement('div');
-  d.className = 'raindrop';
-  d.style.left = Math.random() * 100 + '%';
-  d.style.animationDuration = (0.6 + Math.random() * 0.6) + 's';
-  d.style.animationDelay = (Math.random() * 2) + 's';
-  rainLayer.appendChild(d);
+function spawnBirdsLoop(container){
+  trackInterval(()=>{
+    const b = make('div','bird');
+    b.textContent = Math.random()>0.5 ? '⌃' : '⌒';
+    b.style.top = rand(6,22)+'vh';
+    b.style.animationDuration = rand(7,12)+'s';
+    container.appendChild(b);
+    trackTimeout(()=> b.remove(), 12000);
+  }, 7000);
+}
+function spawnShootingStars(container, onCatch){
+  trackInterval(()=>{
+    if(Math.random() > 0.6) return;
+    const s = make('div','shooting-star');
+    s.style.top = rand(4,22)+'vh';
+    s.style.left = rand(55,92)+'vw';
+    s.dataset.action = 'star';
+    container.appendChild(s);
+    trackTimeout(()=> s.remove(), 1900);
+  }, 6000);
 }
 
-// ---- Memory stars scattered across the sky ----
-const skyEl = document.getElementById('sky');
-const memoryPositions = [
-  {top:'20%', left:'12%'}, {top:'55%', left:'82%'}, {top:'35%', left:'45%'},
-  {top:'70%', left:'20%'}, {top:'15%', left:'70%'},
+/* ---------------- modal ---------------- */
+const overlay = q('#modal-overlay');
+const modalCard = q('#modal-card');
+function openModal(title, body, showPhoto){
+  modalCard.innerHTML =
+    (showPhoto ? '<div class="modal-photo">add a real photo from this memory here 🤍</div>' : '') +
+    `<h3>${title}</h3><p>${body}</p><button class="modal-close" data-action="close-modal">close softly</button>`;
+  overlay.classList.add('show');
+}
+function closeModal(){ overlay.classList.remove('show'); }
+overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeModal(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+/* ---------------- content data ---------------- */
+const flowerReasons = [
+  "Because you check on people nobody else remembers to check on.",
+  "Because you get excited over small good news like it's the biggest news in the world.",
+  "Because you're just as beautiful with zero makeup on a random Tuesday.",
+  "Because you apologize first, even when you don't have to.",
+  "Because your 'good morning' texts somehow fix my whole day.",
+  "Because you make me want to be a softer, better version of myself.",
+  "Because you remember the tiny details I only mentioned once.",
+  "Because you're brave even on the days you don't feel brave at all.",
+  "Because home stopped being a place the day I met you.",
+  "Because loving you is the easiest thing I've ever done."
 ];
-CONFIG.hiddenMemories.forEach((text, i) => {
-  const pos = memoryPositions[i % memoryPositions.length];
-  const btn = document.createElement('button');
-  btn.className = 'memory-star';
-  btn.style.top = pos.top;
-  btn.style.left = pos.left;
-  btn.title = 'click me';
-  btn.addEventListener('click', () => openModal('memoryModal', text));
-  skyEl.appendChild(btn);
-});
+const butterflyLines = [
+  "You are so much stronger than you give yourself credit for.",
+  "Your smile is genuinely one of my favorite things in this world.",
+  "You make the people around you feel safer just by being there.",
+  "You are worth every bit of effort it takes to love you well.",
+  "I hope you know how deeply proud of you I am."
+];
+const shootingStarLetters = [
+  "If I could freeze one ordinary moment with you forever, I don't think I'd pick something big. I'd pick something quiet, like this one.",
+  "Wherever you are right now, some part of me is already thinking about you.",
+  "I didn't know I could miss someone this much and still feel completely at peace, just knowing you exist.",
+  "You are, without question, the best thing that has happened to me."
+];
+const memories = [
+  {title:"the first message", story:"I still remember reading your first reply twice, just to make sure it was real. EDIT ME: swap this for the real story.", },
+  {title:"the first phone call", story:"Your voice was nothing like I imagined, and somehow exactly what I needed. EDIT ME: swap this for the real story."},
+  {title:"the first 'I love you'", story:"I don't think I've ever been that nervous about anything else. EDIT ME: swap this for the real story."},
+  {title:"the day you laughed until you cried", story:"I've never wanted to protect a sound the way I wanted to protect that laugh. EDIT ME: swap this for the real story."},
+  {title:"a quiet, ordinary evening", story:"Nothing happened. That was the whole point — it was perfect because it was just us. EDIT ME: swap this for the real story."}
+];
 
-// ---- Modals ----
-function openModal(id, text){
-  if (text !== undefined) {
-    const target = id === 'memoryModal' ? 'memoryText' : 'randomLetterText';
-    document.getElementById(target).textContent = text;
+/* ---------------- scene registry ---------------- */
+const scenes = {};
+
+scenes.intro = {
+  render(){
+    return `<div class="scene scene-intro" id="scene-root">
+      <div class="ambient" id="intro-stars"></div>
+      <div id="intro-moon" style="position:absolute; left:50%; bottom:-80px; width:70px; height:70px; margin-left:-35px; border-radius:50%;
+        background:radial-gradient(circle at 38% 32%,#fffef2,#ffe9a8 60%,#ffd87a 100%); box-shadow:0 0 60px 20px rgba(255,233,168,.35);
+        transition:bottom 3.2s ease, opacity 3.2s ease; opacity:0;"></div>
+      <div id="intro-valley" style="position:absolute; bottom:0; left:0; width:100%; height:26vh; opacity:0; transition:opacity 2.4s ease;
+        background:linear-gradient(180deg, transparent, #0b0716 90%);"></div>
+      <div class="content" style="position:relative; z-index:5;">
+        <p class="eyebrow" id="intro-eyebrow" style="opacity:0; transition:opacity 1.6s ease;">a world made only for you</p>
+        <h1 id="intro-title" style="opacity:0; transition:opacity 1.6s ease; font-size:clamp(1.6rem,4vw,2.6rem);">Welcome Home, Zaiiny.</h1>
+        <p class="prompt" id="intro-prompt" style="opacity:0; transition:opacity 1s ease;" data-action="goto" data-payload="entrance">click anywhere to begin</p>
+      </div>
+    </div>`;
+  },
+  init(root){
+    root.querySelector('#intro-stars').innerHTML = starsHTML(120, 80);
+    trackTimeout(()=>{ q('#intro-eyebrow').style.opacity = 1; }, 400);
+    trackTimeout(()=>{ q('#intro-moon').style.opacity = 1; q('#intro-moon').style.bottom = '60vh'; }, 1600);
+    trackTimeout(()=>{ q('#intro-valley').style.opacity = 1; }, 3200);
+    trackTimeout(()=>{ q('#intro-title').style.opacity = 1; }, 3600);
+    trackTimeout(()=>{ q('#intro-prompt').style.opacity = .75; }, 4600);
+    root.addEventListener('click', ()=> goTo('entrance'), {once:true});
   }
-  document.getElementById(id).classList.add('show');
+};
+
+scenes.entrance = {
+  render(){
+    return `<div class="scene scene-entrance" id="scene-root">
+      <div class="ambient">${starsHTML(60,50)}${firefliesHTML(10)}${cloudsHTML(3)}</div>
+      <div class="content">
+        <p class="eyebrow">the entrance garden</p>
+        <div class="gate-frame">
+          <div class="gate-arch"></div>
+          <div class="gate-doors">
+            <div class="gate-door l"></div>
+            <div class="gate-door r"></div>
+          </div>
+        </div>
+        <button class="hotspot" data-action="open-gate" style="position:static; font-size:1rem; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.4); border-radius:999px; padding:.75rem 1.8rem; letter-spacing:.1em; text-transform:uppercase;">
+          open the gate
+        </button>
+        <p class="script prompt" style="animation:none; opacity:.85;">there's a place I built, just for you.</p>
+      </div>
+    </div>`;
+  },
+  init(root){
+    root.querySelector('[data-action="open-gate"]').addEventListener('click', (e)=>{
+      root.classList.add('opened');
+      e.currentTarget.disabled = true;
+      trackTimeout(()=> goTo('garden'), 1100);
+    });
+  }
+};
+
+scenes.garden = {
+  render(){
+    const flowers = ['🌷','🌼','🌻','🌸','🌺','🪻','🌹','🌷','🌼','🌸'];
+    let flowerHTML = '';
+    flowers.forEach((f,i)=>{
+      const left = (4 + (i*9.5) % 92) + '%';
+      const bottom = rand(4,60) + '%';
+      flowerHTML += `<button class="hotspot flower" data-action="flower" data-payload="${i}"
+        style="left:${left}; bottom:${bottom}; top:auto; position:absolute; animation-delay:${rand(0,3)}s;" aria-label="a flower">${f}</button>`;
+    });
+    return `<div class="scene scene-garden" id="scene-root">
+      <div class="ambient">${starsHTML(40,40)}${firefliesHTML(8)}${cloudsHTML(2)}</div>
+      <div class="content" style="max-width:640px;">
+        <p class="eyebrow">the flower field</p>
+        <h2 style="font-size:clamp(1.3rem,3vw,1.9rem);">walk through, and see what blooms</h2>
+      </div>
+      <div class="flower-field" style="position:relative;">
+        ${flowerHTML}
+        <button class="hotspot rabbit" data-action="follow-rabbit" style="left:70%; bottom:10%; position:absolute; top:auto;" aria-label="a rabbit">🐇<span class="tag">follow?</span></button>
+      </div>
+      <button class="hotspot" data-action="goto" data-payload="river" style="position:static; margin-top:1.6rem; font-size:.9rem; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.3); border-radius:999px; padding:.7rem 1.5rem;">
+        walk to the river →
+      </button>
+    </div>`;
+  },
+  init(root){
+    root.querySelectorAll('[data-action="flower"]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const i = +btn.dataset.payload;
+        btn.classList.add('bloomed');
+        trackTimeout(()=> openModal('a reason, among many', flowerReasons[i % flowerReasons.length]), 250);
+      });
+    });
+    root.querySelector('[data-action="follow-rabbit"]').addEventListener('click', ()=>{
+      goTo('secret');
+    });
+  }
+};
+
+scenes.river = {
+  render(){
+    return `<div class="scene scene-river" id="scene-root">
+      <div class="ambient">${starsHTML(50,45)}${firefliesHTML(10)}</div>
+      <div class="content">
+        <p class="eyebrow">the riverbank</p>
+        <h2 style="font-size:clamp(1.3rem,3vw,1.9rem);">a wooden bridge, and a quiet current</h2>
+      </div>
+      <div class="river-band" id="river-band">
+        <span class="duck" style="animation-duration:14s; animation-delay:0s;">🦆</span>
+        <span class="duck" style="animation-duration:16s; animation-delay:6s; top:10px;">🦆</span>
+        <span class="leaf" style="animation-duration:10s; animation-delay:2s;">🍃</span>
+        <span class="leaf" style="animation-duration:11s; animation-delay:8s;">🍂</span>
+      </div>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+        <button class="bridge-btn" data-action="cross-bridge">cross the bridge →</button>
+        <button class="bridge-btn" data-action="goto" data-payload="dock" style="background:linear-gradient(180deg,#3b4a76,#232c4e);">walk to the dock →</button>
+      </div>
+    </div>`;
+  },
+  init(root){
+    root.querySelector('[data-action="cross-bridge"]').addEventListener('click', (e)=>{
+      e.currentTarget.disabled = true;
+      const band = q('#river-band');
+      band.style.transition = 'transform .9s ease';
+      band.style.transform = 'scale(1.15)';
+      trackTimeout(()=> goTo('cottage'), 850);
+    });
+  }
+};
+
+scenes.cottage = {
+  render(){
+    return `<div class="scene scene-cottage" id="scene-root">
+      <div class="ambient">${starsHTML(45,40)}${firefliesHTML(9)}</div>
+      <div class="content">
+        <p class="eyebrow">the cottage</p>
+        <h2 style="font-size:clamp(1.3rem,3vw,1.9rem);">the home I dream of, with you in it</h2>
+      </div>
+      <div class="cottage-scene">
+        <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
+          <rect x="110" y="120" width="180" height="100" fill="#8a6a4a" rx="4"/>
+          <polygon points="90,125 200,55 310,125" fill="#6b3f36"/>
+          <rect id="door-rect" x="185" y="150" width="30" height="70" fill="#4a3226" rx="2" data-action="open-door" style="cursor:pointer;"/>
+          <rect x="130" y="145" width="34" height="34" fill="#ffe6a8" rx="3"/>
+          <rect x="236" y="145" width="34" height="34" fill="#ffe6a8" rx="3"/>
+          <rect x="255" y="70" width="14" height="30" fill="#5c4433"/>
+          <circle class="smoke" cx="262" cy="60" r="6" fill="#cfc6da"/>
+          <circle class="smoke" cx="268" cy="46" r="7" fill="#cfc6da" style="animation-delay:1.3s"/>
+          <circle class="smoke" cx="260" cy="34" r="8" fill="#cfc6da" style="animation-delay:2.6s"/>
+          <g fill="#e88fa0"><circle cx="112" cy="215" r="5"/><circle cx="122" cy="220" r="4"/><circle cx="290" cy="212" r="5"/><circle cx="280" cy="222" r="4"/></g>
+        </svg>
+        <button class="hotspot cat" id="cat-btn" data-action="pet-cat" style="left:15%; bottom:0%;" aria-label="a sleeping cat">🐈</button>
+        <button class="hotspot" data-action="open-door" style="left:47%; bottom:20%; font-size:1.4rem;" aria-label="the door"><span class="tag">open the door</span>🚪</button>
+      </div>
+      <button class="hotspot" data-action="goto" data-payload="tree" style="position:static; margin-top:1.4rem; font-size:.9rem; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.3); border-radius:999px; padding:.7rem 1.5rem;">
+        follow the path to the old tree →
+      </button>
+    </div>`;
+  },
+  init(root){
+    const catBtn = root.querySelector('#cat-btn');
+    catBtn.addEventListener('click', ()=>{
+      catBtn.textContent = '🐈';
+      catBtn.style.transform = 'translateY(-6px)';
+      openModal("the cat noticed you", "Even she knows this place is safer with you in it. She stretches, yawns, and settles right back down — like she was just waiting for you to walk by.");
+    });
+    root.querySelectorAll('[data-action="open-door"]').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        trackTimeout(()=> goTo('cottage-interior'), 150);
+      });
+    });
+  }
+};
+
+scenes['cottage-interior'] = {
+  render(){
+    return `<div class="scene scene-interior" id="scene-root">
+      <div class="content">
+        <p class="eyebrow">inside, by the fire</p>
+        <h2 style="font-size:clamp(1.3rem,3vw,1.9rem); margin-bottom:1rem;">warm, quiet, and entirely ours</h2>
+        <div class="note-card">
+          <p style="margin:0; line-height:1.7;">This room doesn't exist yet, not really — but I think about it more than almost anything else. Two mugs by the sink. A blanket we always argue over. A kitchen we're both a little bad in at first. It's not the house I'm dreaming about. It's this: coming home to you, on purpose, every single day.</p>
+        </div>
+        <button class="hotspot" data-action="goto" data-payload="cottage" style="position:static; margin-top:1.6rem; font-size:.85rem; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:.65rem 1.4rem;">
+          step back outside
+        </button>
+      </div>
+    </div>`;
+  },
+  init(){}
+};
+
+scenes.tree = {
+  render(){
+    let blossomHTML = '';
+    for(let i=0;i<40;i++){
+      const size = rand(9,22);
+      blossomHTML += `<div class="blossom" style="width:${size}px;height:${size}px;left:${rand(0,100)}%;top:${rand(0,90)}%;"></div>`;
+    }
+    let lanternHTML = '';
+    memories.forEach((m,i)=>{
+      lanternHTML += `<button class="hotspot lantern" data-action="lantern" data-payload="${i}" style="left:${12+i*17}%; top:${46+(i%2===0?4:-6)}%; animation-delay:${i*0.3}s;" aria-label="memory: ${m.title}">
+        <span class="lantern-string"></span><span class="lantern-glass"></span></button>`;
+    });
+    return `<div class="scene scene-tree" id="scene-root">
+      <div class="ambient" id="tree-ambient">${starsHTML(60,45)}${firefliesHTML(10)}</div>
+      <div class="content">
+        <p class="eyebrow">the memory tree</p>
+        <h2 style="font-size:clamp(1.3rem,3vw,1.9rem);">every lantern is a moment I keep replaying</h2>
+      </div>
+      <div class="tree-wrap">
+        <div class="canopy">${blossomHTML}</div>
+        <div class="trunk"></div>
+        ${lanternHTML}
+      </div>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+        <button class="hotspot" data-action="goto" data-payload="dock" style="position:static; font-size:.85rem; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.3); border-radius:999px; padding:.65rem 1.4rem;">down to the dock →</button>
+        <button class="hotspot" data-action="goto" data-payload="secret" style="position:static; font-size:.85rem; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.3); border-radius:999px; padding:.65rem 1.4rem;">a path into the hedges →</button>
+      </div>
+    </div>`;
+  },
+  init(root){
+    root.querySelectorAll('[data-action="lantern"]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const i = +btn.dataset.payload;
+        const m = memories[i % memories.length];
+        openModal(m.title, m.story, true);
+      });
+    });
+    spawnShootingStars(root.querySelector('#tree-ambient'));
+  }
+};
+
+scenes.secret = {
+  render(){
+    return `<div class="scene scene-secret" id="scene-root">
+      <div class="ambient">${firefliesHTML(8)}${petalsHTML(10,['🌸','✿'])}</div>
+      <div class="content" style="max-width:760px;">
+        <p class="eyebrow" style="color:#ffd6e8;">the secret garden — just for the little girl in you</p>
+        <h2 class="secret-title">you never have to earn softness here</h2>
+        <div class="secret-grid">
+          <div class="secret-card"><span class="icon">🧸</span><p>You're allowed to be excited about small things. A pretty box, a new lip gloss, a silly little gift — none of it needs a reason.</p></div>
+          <div class="secret-card"><span class="icon">🎐</span><p>You don't have to shrink your joy to make it easier for anyone else to hold. Not even for me. Especially not for me.</p></div>
+          <div class="secret-card"><span class="icon">🪄</span><p>Whatever made you smile at seven still lives in you. It's safe here. Nobody's going to tell it to grow up.</p></div>
+          <button class="secret-card hotspot" style="position:relative; top:auto; left:auto;" data-action="music-box"><span class="icon">🎵</span><p>a little music box, waiting to be wound up</p></button>
+          <button class="secret-card hotspot" style="position:relative; top:auto; left:auto;" data-action="swing"><span class="icon">🌙</span><p>an old swing, still holding a letter about our future</p></button>
+        </div>
+        <button class="hotspot" data-action="goto" data-payload="garden" style="position:static; margin-top:1.8rem; font-size:.85rem; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:.65rem 1.4rem;">
+          back to the flowers
+        </button>
+      </div>
+    </div>`;
+  },
+  init(root){
+    root.querySelector('[data-action="music-box"]').addEventListener('click', ()=>{
+      openModal('the music box', "It hums something wordless — but if you listen closely, it kind of sounds like: you are safe here.");
+    });
+    root.querySelector('[data-action="swing"]').addEventListener('click', ()=>{
+      openModal('watching the sky from the swing', "I want a hundred more evenings exactly like the ones we've already had — feet tangled together, no plans, nowhere else either of us would rather be. I keep picturing us older, still choosing this. Still choosing each other, over anything louder.");
+    });
+  }
+};
+
+scenes.dock = {
+  render(){
+    return `<div class="scene scene-dock" id="scene-root">
+      <div class="ambient" id="dock-ambient">${starsHTML(110,90)}${firefliesHTML(14)}</div>
+      <div class="content">
+        <p class="eyebrow">the dock, past midnight</p>
+        <div class="moon-lg"></div>
+        <div class="dock-planks"></div>
+        <div class="note-card">
+          <h3 style="color:var(--gold);">on sleeping on call</h3>
+          <p>Before you, my mind was loud most nights. It circled the same worries until sleep felt like something I had to earn.</p>
+          <p>Then somewhere in all our late, half-awake calls, something shifted. Even when neither of us was really talking — just your breathing on the other end, the small rustle of you turning over — the noise in my head got quieter too.</p>
+          <p>I used to think peace was something I'd have to find far away, someday. You taught me it can just be a person. That falling asleep to the sound of someone who chose to stay on the line is one of the safest feelings there is.</p>
+          <p>This dock is quiet on purpose. No noise, just the river, the crickets, and the sense that you're not carrying anything alone anymore.</p>
+          <p class="script" style="margin-top:.6rem; opacity:.9;">— always the other voice on the call</p>
+        </div>
+        <button class="hotspot" data-action="goto" data-payload="hill" style="position:static; margin-top:1.6rem; font-size:.85rem; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:.7rem 1.5rem;">
+          climb the hill →
+        </button>
+      </div>
+    </div>`;
+  },
+  init(root){
+    spawnShootingStars(root.querySelector('#dock-ambient'));
+  }
+};
+
+scenes.hill = {
+  render(){
+    return `<div class="scene scene-hill" id="scene-root">
+      <div class="ambient">${cloudsHTML(4)}</div>
+      <div class="content">
+        <p class="eyebrow">the hill, overlooking everything</p>
+        <div class="valley">
+          <div class="hill-layer hill-back"></div>
+          <div class="hill-layer hill-front"></div>
+          <div class="glow-dot"></div>
+        </div>
+        <div class="note-card" style="text-align:left;">
+          <h3 style="color:var(--gold);">everything I want, eventually</h3>
+          <p style="line-height:1.75; margin:0 0 .9rem;">From up here you can see all of it at once — the cottage, the river, the lanterns, the whole small world. It's not really about the cottage. It's about what it stands for: a kitchen we're both bad cooks in at first, trips we save up for badly and take anyway, kids who get a home that's loud with laughing instead of silence.</p>
+          <p style="line-height:1.75; margin:0;">I don't need it to be perfect. I just need it to be ours — built one ordinary day at a time, with you choosing me and me choosing you, over and over, long after the choosing stops feeling like a choice.</p>
+        </div>
+        <p class="script" style="margin-top:1.6rem; font-size:1.3rem; opacity:.9;">...and this world keeps growing with every day we get.</p>
+        <button class="hotspot" data-action="goto" data-payload="entrance" style="position:static; margin-top:1.8rem; font-size:.8rem; background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:.6rem 1.3rem;">
+          wander back into the world
+        </button>
+      </div>
+    </div>`;
+  },
+  init(){}
+};
+
+/* ---------------- scene meta for wayfinder ---------------- */
+const sceneMeta = {
+  entrance:{icon:'🚪', label:'entrance'},
+  garden:{icon:'🌷', label:'flower field'},
+  river:{icon:'🌉', label:'the river'},
+  cottage:{icon:'🏡', label:'the cottage'},
+  tree:{icon:'🏮', label:'memory tree'},
+  secret:{icon:'🧸', label:'secret garden'},
+  dock:{icon:'🌙', label:'the dock'},
+  hill:{icon:'⛰️', label:'the hill'}
+};
+
+/* ---------------- state machine ---------------- */
+const state = { current:null, visited:new Set() };
+const stage = q('#stage');
+const veil = q('#veil');
+const wayfinder = q('#wayfinder');
+
+function renderScene(name){
+  clearAllTimers();
+  stage.innerHTML = scenes[name].render();
+  scenes[name].init(stage);
+  state.current = name;
+  state.visited.add(name);
+  renderWayfinder();
 }
-function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-document.getElementById('closeMemoryModal').addEventListener('click', () => closeModal('memoryModal'));
-document.getElementById('closeLetterModal').addEventListener('click', () => closeModal('letterModal'));
-document.querySelectorAll('.modal-bg').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
-});
 
-document.getElementById('randomLetterBtn').addEventListener('click', () => {
-  const letters = CONFIG.randomLetters;
-  const pick = letters[Math.floor(Math.random() * letters.length)];
-  openModal('letterModal', pick);
-});
+function renderWayfinder(){
+  wayfinder.innerHTML = '';
+  Object.keys(sceneMeta).forEach(key=>{
+    if(!state.visited.has(key)) return;
+    const meta = sceneMeta[key];
+    const b = make('button', key===state.current ? 'current':'');
+    b.textContent = meta.icon;
+    b.title = meta.label;
+    b.setAttribute('aria-label', 'go to ' + meta.label);
+    b.addEventListener('click', ()=> goTo(key));
+    wayfinder.appendChild(b);
+  });
+}
 
-// ---- Reasons I love you ----
-const reasonsGrid = document.getElementById('reasonsGrid');
-CONFIG.reasons.forEach((reason, i) => {
-  const card = document.createElement('div');
-  card.className = 'reason-card glass reveal';
-  card.innerHTML = `<span class="reason-num">REASON ${String(i+1).padStart(2,'0')}</span>${reason}`;
-  reasonsGrid.appendChild(card);
-});
+function goTo(name){
+  if(!scenes[name] || name === state.current) return;
+  veil.classList.remove('veil-reveal','veil-reset');
+  // force reflow then cover
+  void veil.offsetWidth;
+  veil.classList.add('veil-cover');
+  trackTimeout(()=>{
+    renderScene(name);
+    veil.classList.remove('veil-cover');
+    veil.classList.add('veil-reveal');
+    trackTimeout(()=>{
+      veil.classList.remove('veil-reveal');
+      veil.classList.add('veil-reset');
+      requestAnimationFrame(()=> veil.classList.remove('veil-reset'));
+    }, 700);
+  }, 700);
+}
 
-// ---- Countdown ----
-function updateCountdown(){
-  const target = new Date(CONFIG.anniversaryDate).getTime();
-  const now = Date.now();
-  let diff = target - now;
-  const box = document.getElementById('countdown');
-  if (diff < 0) {
-    box.innerHTML = `<div class="cd-box glass"><div class="cd-num">💍</div><div class="cd-label">Happy Anniversary</div></div>`;
+/* ---------------- delegated click handling ---------------- */
+document.addEventListener('click', (e)=>{
+  const t = e.target.closest('[data-action]');
+  if(!t) return;
+  const action = t.dataset.action;
+  const payload = t.dataset.payload;
+
+  if(action === 'goto'){ goTo(payload); return; }
+  if(action === 'close-modal'){ closeModal(); return; }
+  if(action === 'star'){
+    const i = Math.floor(Math.random()*shootingStarLetters.length);
+    openModal('a wish, caught mid-fall', shootingStarLetters[i]);
     return;
   }
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  box.innerHTML = `
-    <div class="cd-box glass"><div class="cd-num">${d}</div><div class="cd-label">Days</div></div>
-    <div class="cd-box glass"><div class="cd-num">${h}</div><div class="cd-label">Hours</div></div>
-    <div class="cd-box glass"><div class="cd-num">${m}</div><div class="cd-label">Minutes</div></div>
-    <div class="cd-box glass"><div class="cd-num">${s}</div><div class="cd-label">Seconds</div></div>`;
-}
-updateCountdown();
-setInterval(updateCountdown, 1000);
-
-// ---- Secret section ----
-document.getElementById('secretBtn').addEventListener('click', () => {
-  const val = document.getElementById('secretInput').value.trim().toLowerCase();
-  if (val === CONFIG.secretWord.toLowerCase()) {
-    document.getElementById('secretContent').classList.add('unlocked');
-    document.getElementById('secretError').style.opacity = 0;
-  } else {
-    document.getElementById('secretError').style.opacity = 1;
+  // butterflies (spawned ad hoc, see below) use action "butterfly"
+  if(action === 'butterfly'){
+    const i = +payload;
+    openModal('a passing thought', butterflyLines[i % butterflyLines.length]);
+    return;
   }
 });
 
-// ---- Scroll reveal ----
-const revealEls = document.querySelectorAll('.reveal');
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in'); });
-}, { threshold: 0.15 });
-revealEls.forEach(el => revealObserver.observe(el));
-
-// ---- Typewriter effect for letters ----
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-document.querySelectorAll('[data-typewriter]').forEach(p => {
-  const fullText = p.textContent;
-  p.dataset.full = fullText;
-  if (!reduceMotion) p.textContent = '';
-});
-const typeObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting && !entry.target.dataset.typed) {
-      entry.target.dataset.typed = 'true';
-      if (reduceMotion) return;
-      const full = entry.target.dataset.full;
-      let i = 0;
-      const speed = Math.max(8, Math.min(22, 4000 / full.length));
-      const interval = setInterval(() => {
-        entry.target.textContent = full.slice(0, i);
-        i++;
-        if (i > full.length) clearInterval(interval);
-      }, speed);
-    }
-  });
-}, { threshold: 0.4 });
-document.querySelectorAll('[data-typewriter]').forEach(el => typeObserver.observe(el));
-
-// ---- Mood-driven background + constellation progress ----
-const chapters = document.querySelectorAll('.chapter');
-const constWrap = document.getElementById('constellation');
-chapters.forEach((ch, i) => {
-  if (ch.dataset.const === undefined) return;
-  const node = document.createElement('div');
-  node.className = 'const-node';
-  node.innerHTML = `<div class="const-dot" data-idx="${i}"></div>${i < chapters.length-1 ? '<div class="const-line" data-idx="'+i+'"></div>' : ''}`;
-  constWrap.appendChild(node);
+/* ---------------- ambient butterflies (a few, world-wide, click for compliments) ---------------- */
+function sprinkleButterflies(root, count){
+  for(let i=0;i<count;i++){
+    const b = make('button','hotspot');
+    b.textContent = '🦋';
+    b.dataset.action = 'butterfly';
+    b.dataset.payload = i;
+    b.style.left = rand(8,88)+'vw';
+    b.style.top = rand(15,75)+'vh';
+    b.style.fontSize = '1.3rem';
+    b.setAttribute('aria-label','a butterfly');
+    root.appendChild(b);
+  }
+}
+const origInit = {};
+['entrance','garden','tree','secret'].forEach(key=>{
+  origInit[key] = scenes[key].init;
+  scenes[key].init = function(root){
+    origInit[key](root);
+    sprinkleButterflies(root.querySelector('.ambient') || root, 2);
+  };
 });
 
-const moodObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const mood = entry.target.dataset.mood || 'night';
-      const sky = document.getElementById('sky');
-      sky.className = 'sky' + (mood !== 'night' ? ' mood-' + mood : '');
-      const idx = entry.target.dataset.const;
-      if (idx !== undefined) {
-        document.querySelectorAll('.const-dot').forEach(d => {
-          d.classList.toggle('active', Number(d.dataset.idx) <= Number(idx));
-        });
-        document.querySelectorAll('.const-line').forEach(l => {
-          l.classList.toggle('active', Number(l.dataset.idx) < Number(idx));
-        });
-      }
-    }
-  });
-}, { threshold: 0.5 });
-chapters.forEach(ch => moodObserver.observe(ch));
+/* ---------------- boot ---------------- */
+renderScene('intro');
+
+})();
 </script>
 </body>
 </html>
